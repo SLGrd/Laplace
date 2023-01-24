@@ -1,0 +1,111 @@
+﻿@page "/"
+
+<PageTitle>Index</PageTitle>
+
+<!-- HTML -->
+<div class="container-fluid h100" style="background-color:lightgray;overflow-y:auto;">
+    <div class="row">
+        <div class="col-12 flexColCenter">
+            <h1>Fundamentos de Modelo Probabilistico</h1>
+            <h2> using QUICKGRID Net 7.0</h2>
+            <p>This is an Open Source Datagrid Component developed by Microsoft, maybe, to be a prt NET 7.</p>
+        </div>
+    </div>
+    <div class="row m-0 p-0">        
+        <div class="col-12 flexColCenter">
+            <a title="Sophie Feytaud (fl.1841), Public domain, via Wikimedia Commons"
+               href="https://commons.wikimedia.org/wiki/File:Pierre-Simon_Laplace.jpg">
+                    <img width="512" alt="Pierre-Simon Laplace" src="https://upload.wikimedia.org/wikipedia/commons/e/e3/Pierre-Simon_Laplace.jpg">
+            </a>
+        </div>
+    </div>
+    <br />
+</div>
+<!-- Style -->
+<style>
+    .bdy {
+        background: linear-gradient(to bottom, #6699cc, #99ccff);
+    }
+    .splash {
+        //background: radial-gradient(circle, #6699cc, #66cccc, #99ccff);
+        height: auto;
+        width: auto;
+        border-radius: 1%;
+    }
+    .h100 {
+        height: 100%;
+    }
+    .flexColStart {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+        color: black;
+    }
+    .flexColCenter {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: black;
+    }
+    .flexRowStart {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: left;
+        color: black;
+    }
+    .flexRowEnd {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: right;
+        color: black;
+    }
+    button {
+        btn btn-labeled btn-primary btn-sm;
+        margin-right: 3px;
+        border: solid 1px red;
+    }
+    .htmlbtn {
+        background-image: url(/icons/maintenance_32px.png);
+        padding: 10px;
+        margin-left: 4px;
+        /*margin-left: 40px;*/
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+    }
+    .Img {
+        border: none;
+        padding: 10px;
+        margin-left: 4px;
+        margin-right: 1px;
+        height: 20px;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+    }
+    .Search {
+        background-image: url(/icons/Search1.png);
+    }
+    .UpImage {
+        background-image: url(/icons/UpArrow.png);
+    }
+    .DownImage {
+        background-image: url(/icons/DownArrow.png);
+    }
+    .PageImage {
+        background-image: url(/icons/Weather17.png);
+        padding: 10px;
+        margin-left: 4px;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+    }
+    label {
+        font-size: 12px;
+        color: red;
+    }
+</style>
+<!-- C# code -->
+@code {
+}

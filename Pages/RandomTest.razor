@@ -1,0 +1,371 @@
+﻿@page "/RandomTest"
+@using Syncfusion.Blazor;
+@using Syncfusion.Blazor.Charts;
+@using Sy = Syncfusion.Blazor.Charts;
+@using System.Diagnostics;
+
+<PageTitle>Random Test</PageTitle>
+<!-- Greeting Message -->
+<TopBanner BannerTxt="Testing Random Function">This model will be used in Probabilities videos</TopBanner>
+<!-- HMTL -->
+<div class="container-fluid h100 m-0 pad">
+    <div class="col-12 m-0 p-1 flexColCenter" >
+        <h4>DICE Trial</h4>
+    </div>
+    <div class="col-12 flexRowStart m-0 pad parmFont" style="border:solid 1px red;border-color:cadetblue;">
+        <div class="row m-0 p-0">
+            <div class="col-4 m-0 p-0">   
+                <div class="m-0 padRight">
+                    <label>Challenge</label>
+                    <select class="m-0 p-0" style="width:100%;height:30px;" @onchange=GetChallenge>
+                        <option value="-1">Choose challenge</option>
+                        <option value="1">Single Die</option>
+                        <option value="1">Double Dice</option>
+                    </select>
+                </div>              
+            </div>
+            <div class="col-2 m-0 p-0">
+                <div class="form-group m-0 padRight">
+                    <label>Trials</label>
+                    <input type="number" style="width:100%;height:30px;" @bind=maxTrials />
+                </div>
+            </div>
+            <div class="col-2 m-0 p-0">
+                <div class="form-group m-0 padRight">
+                    <label>Rounds</label>
+                    <input type="number" style="width:100%;height:30px;" @bind=maxRounds />
+                </div>
+            </div>
+            <div class="col-2 m-0 p-0 ">
+                <div class="form-group m-0 padRight">
+                    <label>Start testing</label>
+                    <button class="button" style="width:100%; height:30px;" @onclick="() => StartTimer()">@TmrOnOff</button>
+                </div>
+            </div>
+            <div class="col-2 m-0 p-0 ">
+                <div class="form-group m-0 padRight">
+                    <label>Reset</label>
+                    <button class="button" style="width:100%; height:30px;" @onclick="() => ResetTimer()">RESET</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 m-0 pad" style="border:solid 1px red;border-color:cadetblue;">
+        <div class="form-group m-0">
+            <label>Spped Control</label>
+            <input type="range" min="10" max="300" step="1" style="width:100%" 
+                   @bind-value="@speed" @oninput="@(args => ChangeSpeed( Convert.ToInt32(args.Value)))"/>                  
+            <input type="number" min="10" max="300" step="1" style="background-color:azure;border:none" @bind-value=@speed />
+        </div>
+
+        <div class="form-group m-0">
+            <label>Die Number #1</label>
+            <input type="range" min="1" max="@maxTrials" step="1" style="width:100%" value="@nTrials" />
+            <input type="number" min=1 max=6 step="1" style="background-color:azure;border:none" @bind-value=@nTrials />
+        </div>
+
+        <div class="form-group m-0">
+            <label>Die NUmber #2</label>
+            <input type="range" min="1" max="maxRounds" step="1" style="width:100%" value="@nRounds" />                   
+            <input type="number" min=1 max=6 step="1" style="background-color:azure;border:none" @bind-value=@nRounds />
+        </div>
+    </div>
+    <div class="col-12 flexColCenter m-0 p-0 mb-3" style="height:85%;border:solid 1px red;border-color:cadetblue;">
+        <SfChart Title="Die Randomness Tester" @ref="sfChart" >
+            <ChartArea>
+                <ChartAreaBorder Width="4"></ChartAreaBorder>
+            </ChartArea>
+
+            <ChartPrimaryXAxis ValueType="Sy.ValueType.Category" 
+                               Title="" Maximum="1" Interval="1" LabelIntersectAction=LabelIntersectAction.Rotate45 LabelRotation="0">
+                <ChartAxisMajorGridLines Width="1"></ChartAxisMajorGridLines>
+                <ChartAxisMajorTickLines Width="0"></ChartAxisMajorTickLines>
+            </ChartPrimaryXAxis>
+
+            <ChartPrimaryYAxis Title="Face Count" Maximum="@maxTrials" Interval="5">
+                <ChartAxisMajorTickLines Width="2"></ChartAxisMajorTickLines>
+                <ChartAxisLineStyle Width="0"></ChartAxisLineStyle>
+            </ChartPrimaryYAxis>
+
+            <ChartSeriesCollection >
+                <ChartSeries TooltipMappingName="MappingName" DataSource="@ChartPoints" XName="Country" YName="Face1" Name="Face1"
+                             ColumnSpacing="0.1" Type="ChartSeriesType.Column" Fill="red">
+                    <ChartMarker>
+                        <ChartDataLabel Visible="true" Position="LabelPosition.Top">
+                            <ChartDataLabelFont FontWeight="600" Color="#ffffff"></ChartDataLabelFont>
+                        </ChartDataLabel>
+                    </ChartMarker>
+                </ChartSeries>
+
+                <ChartSeries TooltipMappingName="MappingName" DataSource="@ChartPoints" XName="Country" YName="Face2" Name="Face2"
+                             ColumnSpacing="0.1" Type="ChartSeriesType.Column" Fill="silver">
+                    <ChartMarker>
+                        <ChartDataLabel Visible="true" Position="LabelPosition.Top">
+                            <ChartDataLabelFont FontWeight="600" Color="#ffffff"></ChartDataLabelFont>
+                        </ChartDataLabel>
+                    </ChartMarker>
+                </ChartSeries>
+                <ChartSeries TooltipMappingName="MappingName" DataSource="@ChartPoints" XName="Country" YName="Face3" Name="Face3"
+                             ColumnSpacing="0.1" Type="ChartSeriesType.Column" Fill="#cd7f32">
+                    <ChartMarker>
+                        <ChartDataLabel Visible="true" Position="LabelPosition.Top">
+                            <ChartDataLabelFont FontWeight="600" Color="#ffffff"></ChartDataLabelFont>
+                        </ChartDataLabel>
+                    </ChartMarker>
+                </ChartSeries>
+                <ChartSeries TooltipMappingName="MappingName" DataSource="@ChartPoints" XName="Country" YName="Face4" Name="Face4"
+                             ColumnSpacing="0.1" Type="ChartSeriesType.Column" Fill="black">
+                    <ChartMarker>
+                        <ChartDataLabel Visible="true" Position="LabelPosition.Top">
+                            <ChartDataLabelFont FontWeight="600" Color="#ffffff"></ChartDataLabelFont>
+                        </ChartDataLabel>
+                    </ChartMarker>
+                </ChartSeries>
+                <ChartSeries TooltipMappingName="MappingName" DataSource="@ChartPoints" XName="Country" YName="Face5" Name="Face5"
+                             ColumnSpacing="0.1" Type="ChartSeriesType.Column" Fill="blue">
+                    <ChartMarker>
+                        <ChartDataLabel Visible="true" Position="LabelPosition.Top">
+                            <ChartDataLabelFont FontWeight="600" Color="#ffffff"></ChartDataLabelFont>
+                        </ChartDataLabel>
+                    </ChartMarker>
+                </ChartSeries>
+
+                <ChartSeries TooltipMappingName="MappingName" DataSource="@ChartPoints" XName="Country" YName="Face6" Name="Face6"
+                             ColumnSpacing="0.1" Type="ChartSeriesType.Column" Fill="green">
+                    <ChartMarker>
+                        <ChartDataLabel Visible="true" Position="LabelPosition.Top">
+                            <ChartDataLabelFont FontWeight="600" Color="#ffffff"></ChartDataLabelFont>
+                        </ChartDataLabel>
+                    </ChartMarker>
+                </ChartSeries>
+            </ChartSeriesCollection>
+
+            <ChartLegendSettings Visible="true" EnableHighlight="true"></ChartLegendSettings>
+            <ChartTooltipSettings Header="<b>Dice</b>" Enable="true" Shared="true"></ChartTooltipSettings>
+        </SfChart>
+    </div>
+</div>
+<style>
+    .titleFont {
+        color: darkolivegreen;
+        font-family: 'Montserrat';
+        font-size: 1.1em;
+    }
+    h2 {
+        font-family: 'Montserrat';
+        font-size: 2em;
+    }
+    h3 {
+        font-family: 'Montserrat';
+        font-size: 1.5em;
+    }
+    .parmFont {
+        color: darkolivegreen;
+        font-family: 'Montserrat';
+        font-size: 1.1em;
+    }
+    .h100 {
+        height: 70%;
+    }
+    .flexColStart {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+        color: black;
+    }
+    .flexColCenter {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: black;
+    }
+    .flexRowStart {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: left;
+        color: black;
+    }
+    .flexRowEnd {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: right;
+        color: black;
+    }
+    button {
+        btn btn-labeled btn-primary btn-sm;
+        margin-right: 3px;
+        border: solid 1px black;
+        display: flex;
+        flex-direction: row;
+        text-align: center;
+        justify-content: center;
+    }
+    .htmlbtn {
+        background-image: url(/icons/maintenance_32px.png);
+        padding: 10px;
+        margin-left: 4px;
+        /*margin-left: 40px;*/
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+    }
+    label {
+        font-size: 12px;
+        color: red;
+    }
+    .pad{
+        padding: 0px 50px 10px 50px;
+    }
+    .padRight {
+        padding: 0px 10px 0px 0px;
+    }
+</style>
+@code {
+    SfChart? sfChart;
+    System.Threading.Timer t;
+    System.Threading.Timer r;
+    Random rnd = new();
+
+    private string TmrOnOff = "OFF";
+    private string? Challenge = "";
+
+    private int speed = 100;
+    private int maxTrials = 150;
+    private int maxRounds = 1;
+
+    private int nTrials = 0;
+    private int nRounds = 0;
+
+    public record ColumnChartData
+    {
+        public string Country { get; set; }
+        public int Face1 { get; set; } = 0;
+        public int Face2 { get; set; } = 0;
+        public int Face3 { get; set; } = 0;
+        public int Face4 { get; set; } = 0;
+        public int Face5 { get; set; } = 0;
+        public int Face6 { get; set; } = 0;
+        public string MappingName { get; set; }
+    }
+
+    public List<ColumnChartData> ChartPoints { get; set; } = new List<ColumnChartData>
+    {
+        new ColumnChartData { Country = "Cubo 1", Face1 = 0, Face2 = 0, Face3 = 0, Face4 = 0, Face5 = 0, Face6 = 0, MappingName = "C 1" },
+        new ColumnChartData { Country = "Total",  Face1 = 0, Face2 = 0, Face3 = 0, Face4 = 0, Face5 = 0, Face6 = 0, MappingName = "Total" },
+    };
+
+    protected override void OnInitialized()
+    {
+        //  Set timer for data update
+        t = new System.Threading.Timer(x => { InvokeAsync(() => {
+                UpdateData();
+                this.StateHasChanged();
+            });
+        },  null, Timeout.Infinite, speed);
+
+        //  Set timer for screen update. You can timer t only if you want
+        r = new System.Threading.Timer(x => { InvokeAsync(() => {
+                UpdateScreen();                
+            });
+        },  null, Timeout.Infinite, speed);
+
+        base.OnInitialized();
+    }
+    private void GetChallenge(ChangeEventArgs e) => Challenge = e.Value.ToString();
+    protected void StartTimer()
+    {
+        ClearChartPoints(0);
+
+        if ( TmrOnOff == "OFF")
+        {
+            TmrOnOff = "ON";
+            t.Change( 1000, speed);
+            r.Change( 1000, speed);            //Timeout.Infinite, Timeout.Infinite
+        } 
+        else
+            TimerOff();
+    }
+    private void ResetTimer()
+    {
+        TimerOff();
+        nRounds = 0;
+        nTrials = 0;
+        ClearChartPoints(0);
+        ClearChartPoints(1);     
+    }
+    private void UpdateData() 
+    {
+        List<int> frequencies = new List<int>()
+        {
+            ChartPoints[0].Face1,
+            ChartPoints[0].Face2,
+            ChartPoints[0].Face3,
+            ChartPoints[0].Face4,
+            ChartPoints[0].Face5,
+            ChartPoints[0].Face6
+        };
+        nTrials = frequencies.Max();
+
+        if ( nTrials >= maxTrials)
+        {
+            TimerOff();
+            //  Moves result to total
+            var maxIndex = frequencies.IndexOf(nTrials);
+
+            ChartPoints[1].Face1 += ( maxIndex == 0 ? 1 : 0);
+            ChartPoints[1].Face2 += ( maxIndex == 1 ? 1 : 0);
+            ChartPoints[1].Face3 += ( maxIndex == 2 ? 1 : 0);
+            ChartPoints[1].Face4 += ( maxIndex == 3 ? 1 : 0);
+            ChartPoints[1].Face5 += ( maxIndex == 4 ? 1 : 0);
+            ChartPoints[1].Face6 += ( maxIndex == 5 ? 1 : 0);
+            nTrials = 0;
+
+            if (nRounds < maxRounds -1 )
+            {
+                nRounds++; StartTimer();
+            }
+            else
+            {   nRounds = 0; TimerOff(); }
+        }
+        else
+        {   //  Simula um arremesso de um dado
+            int m = rnd.Next(1, 7);
+            ChartPoints[0].Face1 += ( m == 1 ? 1 : 0);
+            ChartPoints[0].Face2 += ( m == 2 ? 1 : 0);
+            ChartPoints[0].Face3 += ( m == 3 ? 1 : 0);
+            ChartPoints[0].Face4 += ( m == 4 ? 1 : 0); 
+            ChartPoints[0].Face5 += ( m == 5 ? 1 : 0);
+            ChartPoints[0].Face6 += ( m == 6 ? 1 : 0);
+        }
+    }
+    private void UpdateScreen() 
+    {        
+        this.sfChart!.RefreshAsync(false);
+    }
+    private void TimerOff()
+    {
+        TmrOnOff = "OFF";
+        t.Change(Timeout.Infinite, Timeout.Infinite);
+        r.Change(Timeout.Infinite, Timeout.Infinite);
+
+        UpdateScreen();
+    }
+    private void ClearChartPoints( int i)
+    {
+        ChartPoints[i].Face1 = 0;
+        ChartPoints[i].Face2 = 0;
+        ChartPoints[i].Face3 = 0;
+        ChartPoints[i].Face4 = 0;
+        ChartPoints[i].Face5 = 0;
+        ChartPoints[i].Face6 = 0;
+    }
+    private void ChangeSpeed(int speed)
+    {
+        t.Change(10, speed);
+        r.Change(10, speed);
+    }
+}

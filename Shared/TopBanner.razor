@@ -1,0 +1,26 @@
+﻿<div class="banner CenterCol">
+    <h5 class="m-0 p-0">@BannerTxt</h5>
+    @ChildContent   
+</div>
+
+<style>
+    .banner {
+        height: 10%;
+        width : 100%;
+        background-color: #001100;
+        color: white;
+    }
+    .CenterCol{
+        display:         flex;
+        flex-direction:  column;
+        align-items:     center;
+        justify-content: center;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public string? BannerTxt { get; set; }
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}
