@@ -1,0 +1,454 @@
+﻿@page "/Casino"
+@using static MyLibrary;
+@using System.Drawing;
+@using Microsoft.AspNetCore.Html;
+@using System.Globalization;
+@inject IJSRuntime JSRuntime;
+
+<PageTitle>Index</PageTitle>
+<!-- Greeting Message -->
+@*<TopBanner BannerTxt = "SVG Geometric  Figures">This model will be used to show ZOOM</TopBanner>*@
+<TopBanner BannerTxt="Rolling Dice Casino"></TopBanner>
+<!-- HMTL -->
+<div class="container-fluid h100 m-0 p-0 " style="border:solid 3px green;">
+    <div class="row m-0 " style="background-color:azure;height:186px">
+        <div class="col-4 m0" style="border:solid 1px red;border-color:cadetblue;">
+            <h4>Circle</h4>
+            <div>
+                <div class="form-group m0">
+                    <label style="font-size:12px;margin-bottom:0;margin-top:1px">Width</label>
+                    <input type="range" min="0" max="255" step="1" style="width:100%"
+                           value="@svgWidth" @oninput="@(args => SvgWidth( Convert.ToInt32(args.Value )))" />
+                    <input type="number" step="10" style="background-color:azure;border:none" @bind-value=@svgWidth />
+                </div>
+
+                <div class="form-group m0">
+                    <label style="font-size:12px;margin-bottom:0;margin-top:1px">Height</label>
+                    <input type="range" min="1" max="@InitialHeight" step="1" style="width:100%"
+                           value="@svgHeight" @oninput="@(args => SvgHeight( Convert.ToInt32(args.Value )))" />
+                    <input type="number" step="10" style="background-color:azure;border:none" @bind-value=@svgHeight />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-4 m0" style="border:solid 1px red;border-color:cadetblue">
+            <h4>View Start (viewbox upper left corner position)</h4>
+            <div class="form-group m0">
+                <label style="font-size:12px;margin-bottom:0;margin-top:1px">Left (x)</label>
+                <input type="range" min="@(-svgWidth)" max="@svgWidth" step="1" style="width:100%"
+                       value="@viewX" @oninput="@(args => ViewX( Convert.ToInt32(args.Value )))" />
+                <input type="number" step="10" style="background-color:azure;border:none" @bind-value=@viewX />
+            </div>
+
+            <div class="form-group m0">
+                <label style="font-size:12px;margin-bottom:0;margin-top:1px">Top (y)</label>
+                <input type="range" min="@(-svgHeight)" max="@svgHeight" step="1" style="width:100%"
+                       value="@viewY" @oninput="@(args => ViewY( Convert.ToInt32(args.Value )))" />
+                <input type="number" step="10" style="background-color:azure;border:none" @bind-value=@viewY />
+            </div>
+        </div>
+
+        <div class="col-4 m-0 p-0 flexRowStart">
+            <div class="col-6">
+                <div class="form-group m-0 padRight">
+                    <label>Start testing</label>
+                    <button class="button" style="width:100%; height:30px;" @onclick="() => StartTimer()">@TmrOnOff</button>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group m-0 padRight">
+                    <label>Reset</label>
+                    <button class="button" style="width:100%; height:30px;" @onclick="() => Reset()">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row h70 m-0" style="background-color:azure;border:solid 1px black;">
+        <div id="divSvg" class="col-12 " style="border:solid 0px red;border-color:cadetblue;height:inherit;">
+           
+            <!-- Set viewport and viewbox locations -->
+            <svg x="0%" y="0%" width="100%" height="100%" @ref="SVGR" id="svgGr"
+                    style="border:solid 0px red;border-color:red"
+                    preserveAspectRatio="@preservRatio">
+                <g id="rectangl">
+                    <rect id="10" x="@rectX" y="@rectY" width="@rectW" height="80" rx="10" ry="10" fill="@FillColorDice1" stroke="black" />
+                    @if (Visible[0])
+                    {
+                        <circle cx="@(rectX + 40)" cy="@(rectY + 40)" r="5" fill="black" />
+                    }
+                    @if (Visible[1])
+                    {
+                        <circle cx="@(rectX + 20)" cy="@(rectY + 60)" r="5" fill="black" />
+                        <circle cx="@(rectX + 60)" cy="@(rectY + 20)" r="5" fill="black" />
+                    }
+                    @if (Visible[2])
+                    {
+                        <circle cx="@(rectX + 40)" cy="@(rectY + 20)" r="5" fill="black" />
+                        <circle cx="@(rectX + 40)" cy="@(rectY + 40)" r="5" fill="black" />
+                        <circle cx="@(rectX + 40)" cy="@(rectY + 60)" r="5" fill="black" />
+                    }
+                    @if (Visible[3])
+                    {
+                        <circle cx="@(rectX + 20)" cy="@(rectY + 20)" r="5" fill="black" />
+                        <circle cx="@(rectX + 20)" cy="@(rectY + 60)" r="5" fill="black" />
+                        <circle cx="@(rectX + 60)" cy="@(rectY + 20)" r="5" fill="black" />
+                        <circle cx="@(rectX + 60)" cy="@(rectY + 60)" r="5" fill="black" />
+                    }
+                    @if (Visible[4])
+                    {
+                        <circle cx="@(rectX + 20)" cy="@(rectY + 20)" r="5" fill="black" />
+                        <circle cx="@(rectX + 20)" cy="@(rectY + 60)" r="5" fill="black" />
+                        <circle cx="@(rectX + 40)" cy="@(rectY + 40)" r="5" fill="black" />
+                        <circle cx="@(rectX + 60)" cy="@(rectY + 20)" r="5" fill="black" />
+                        <circle cx="@(rectX + 60)" cy="@(rectY + 60)" r="5" fill="black" />
+                    }
+                    @if (Visible[5])
+                    {
+                        <circle cx="@(rectX + 20)" cy="@(rectY + 20)" r="5" fill="black" />
+                        <circle cx="@(rectX + 20)" cy="@(rectY + 40)" r="5" fill="black" />
+                        <circle cx="@(rectX + 20)" cy="@(rectY + 60)" r="5" fill="black" />
+                        <circle cx="@(rectX + 60)" cy="@(rectY + 20)" r="5" fill="black" />
+                        <circle cx="@(rectX + 60)" cy="@(rectY + 40)" r="5" fill="black" />
+                        <circle cx="@(rectX + 60)" cy="@(rectY + 60)" r="5" fill="black" />
+                    }
+                </g>
+                <g id="rectangl">
+                    <rect id="10" x="@rectX" y="@rectY2" width="@rectW" height="80" rx="10" ry="10" fill="@FillColorDice2" stroke="black" />
+                    @if (Visible2[0])
+                    {
+                        <circle cx="@(rectX + 40)" cy="@(rectY2 + 40)" r="5" fill="black" />
+                    }
+                    @if (Visible2[1])
+                    {
+                        <circle cx="@(rectX + 20)" cy="@(rectY2 + 60)" r="5" fill="black" />
+                        <circle cx="@(rectX + 60)" cy="@(rectY2 + 20)" r="5" fill="black" />
+                    }
+                    @if (Visible2[2])
+                    {
+                        <circle cx="@(rectX + 40)" cy="@(rectY2 + 20)" r="5" fill="black" />
+                        <circle cx="@(rectX + 40)" cy="@(rectY2 + 40)" r="5" fill="black" />
+                        <circle cx="@(rectX + 40)" cy="@(rectY2 + 60)" r="5" fill="black" />
+                    }
+                    @if (Visible2[3])
+                    {
+                        <circle cx="@(rectX + 20)" cy="@(rectY2 + 20)" r="5" fill="black" />
+                        <circle cx="@(rectX + 20)" cy="@(rectY2 + 60)" r="5" fill="black" />
+                        <circle cx="@(rectX + 60)" cy="@(rectY2 + 20)" r="5" fill="black" />
+                        <circle cx="@(rectX + 60)" cy="@(rectY2 + 60)" r="5" fill="black" />
+                    }
+                    @if (Visible2[4])
+                    {
+                        <circle cx="@(rectX + 20)" cy="@(rectY2 + 20)" r="5" fill="black" />
+                        <circle cx="@(rectX + 20)" cy="@(rectY2 + 60)" r="5" fill="black" />
+                        <circle cx="@(rectX + 40)" cy="@(rectY2 + 40)" r="5" fill="black" />
+                        <circle cx="@(rectX + 60)" cy="@(rectY2 + 20)" r="5" fill="black" />
+                        <circle cx="@(rectX + 60)" cy="@(rectY2 + 60)" r="5" fill="black" />
+                    }
+                    @if (Visible2[5])
+                    {
+                        <circle cx="@(rectX + 20)" cy="@(rectY2 + 20)" r="5" fill="black" />
+                        <circle cx="@(rectX + 20)" cy="@(rectY2 + 40)" r="5" fill="black" />
+                        <circle cx="@(rectX + 20)" cy="@(rectY2 + 60)" r="5" fill="black" />
+                        <circle cx="@(rectX + 60)" cy="@(rectY2 + 20)" r="5" fill="black" />
+                        <circle cx="@(rectX + 60)" cy="@(rectY2 + 40)" r="5" fill="black" />
+                        <circle cx="@(rectX + 60)" cy="@(rectY2 + 60)" r="5" fill="black" />
+                    }
+                </g>
+                @*<Dice rectX="@rectX" rectY="@rectY3" Visible="@Visible3" FillColorDice="@FillColorDice3"></Dice>*@
+            </svg>
+        </div>
+    </div>    
+</div>
+
+<!-- Style -->
+<style>
+    .rowB {
+        display: flex;
+        flex-wrap: nowrap;
+        height: 100vh;
+    }
+    .colB {
+        flex: 1;
+    }    
+    .contain {     
+/*        display:flex;
+        width: 100%;
+        height:100%;*/
+        
+        background: blue;
+    }
+    .fillVhSpace{
+        display: flex;
+        flex-direction:column;        
+    }
+
+    .titleFont {
+        color: darkolivegreen;
+        font-family: 'Montserrat';
+        font-size: 1.1em;
+    }
+
+    h2 {
+        font-family: 'Montserrat';
+        font-size: 2em;
+    }
+
+    h3 {
+        font-family: 'Montserrat';
+        font-size: 1.5em;
+    }
+
+    .parmFont {
+        color: darkolivegreen;
+        font-family: 'Montserrat';
+        font-size: 1.1em;
+    }
+
+    .h100 {
+        height: 90%;
+    }
+    .h20{
+        height: 20%;
+    }
+    .h70{
+        height: calc( 0.9 * 100vh - 189px);
+        min-height: 320px;
+    }
+    .flexColStart {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+        color: black;
+    }
+
+    .flexColCenter {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: black;
+    }
+
+    .flexRowStart {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: left;
+        color: black;
+    }
+
+    .flexRowEnd {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: right;
+        color: black;
+    }
+
+    button {
+        btn btn-labeled btn-primary btn-sm;
+        margin-right: 3px;
+        border: solid 1px black;
+        display: flex;
+        flex-direction: row;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .htmlbtn {
+        background-image: url(/icons/maintenance_32px.png);
+        padding: 10px;
+        margin-left: 4px;
+        /*margin-left: 40px;*/
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+    }
+
+    label {
+        font-size: 12px;
+        color: red;
+    }
+
+    .pad {
+        padding: 0px 50px 10px 50px;
+    }
+
+    .padRight {
+        padding: 0px 10px 0px 0px;
+    }
+</style>
+@code {
+    private ElementReference SVGR;
+
+    int rectX = 30, rectY = 20, rectY2 = 120, rectY3 = 220, rectW = 80;
+    string? FillColorDice1, FillColorDice2, FillColorDice3;
+
+    private readonly int InitialWidth = 800, InitialHeight = 500;
+    //  Set svg ViewPort arbitrary initial values (pixels)
+    private int svgWidth, svgHeight;
+    Random rnd = new();
+
+    System.Threading.Timer v;
+    System.Threading.Timer r;
+    private string TmrOnOff = "OFF";
+
+    private bool[] Visible = Enumerable.Repeat(false, 6).ToArray();
+    private bool[] Visible2 = Enumerable.Repeat(false, 6).ToArray();
+    private bool[] Visible3 = Enumerable.Repeat(false, 6).ToArray();
+
+    //  Set viewbox initial values
+    private int viewX = 0, viewY = 0, viewWidth = 0, viewHeight = 0;
+    //  Set flags to determine user action behavior
+    private string preservRatio = "none";
+    private bool centerViewBox = false;
+    //  Initial values in % ( for those who use Bootstrap)
+    //private string svgWidthPct = "100%", svgHeightPct = "100%";
+
+    private string GetRandomColor()
+    {
+        checked
+        {
+            long red = rnd.Next(10, 256);
+            long green = rnd.Next(10, 256);
+            long blue = rnd.Next(10, 256);
+
+            return string.Format("#{0:x6}", red * 256 * 256 * 1 + green * 256 * 1 + blue * 1);
+        }
+    }
+    protected override void OnInitialized()
+    {
+        //  Set timer for data update
+        v = new System.Threading.Timer(x =>
+        {
+            InvokeAsync(() =>
+            {
+                UpdateData();
+                this.StateHasChanged();
+            });
+        }, null, Timeout.Infinite, 5);
+
+        //  Set timer for screen update. You can timer t only if you want
+        r = new System.Threading.Timer(x =>
+        {
+            InvokeAsync(() =>
+            {
+                UpdateNumber();
+            });
+        }, null, Timeout.Infinite, 1000);
+
+        FillColorDice1 = GetRandomColor();
+        FillColorDice2 = GetRandomColor();
+        FillColorDice3 = GetRandomColor();
+        UpdateNumber();
+
+        //  I suggest to set initial viewbox location equal to view port
+        svgWidth = InitialWidth;
+        svgHeight = InitialHeight;
+        viewWidth = svgWidth;
+        viewHeight = svgHeight;
+        base.OnInitialized();
+    }
+    protected void StartTimer()
+    {
+        if (TmrOnOff == "OFF")
+        {
+            TmrOnOff = "ON";
+            v.Change(500, 5);
+            r.Change(500, 1000);            //Timeout.Infinite, Timeout.Infinite
+        }
+        else
+            TimerOff();
+    }
+    private void TimerOff()
+    {
+        TmrOnOff = "OFF";
+        v.Change(Timeout.Infinite, Timeout.Infinite);
+        r.Change(Timeout.Infinite, Timeout.Infinite);
+    }
+    private void UpdateData()
+    {
+        if (rectX < 1500)
+            rectX += 1;
+        else
+            TimerOff();
+    }
+    private void UpdateNumber()
+    {
+        int j = 0;
+        do j = rnd.Next(0, 6); while (Visible[j]);
+        Visible = Enumerable.Repeat(false, 6).ToArray();
+        Visible[j] = true;
+
+        j = 0;
+        do j = rnd.Next(0, 6); while (Visible2[j]);
+        Visible2 = Enumerable.Repeat(false, 6).ToArray();
+        Visible2[j] = true;
+
+        j = 0;
+        do j = rnd.Next(0, 6); while (Visible3[j]);
+        Visible3 = Enumerable.Repeat(false, 6).ToArray();
+        Visible3[j] = true;
+    }
+    private async void Reset()
+    {
+        FillColorDice1 = GetRandomColor();
+        FillColorDice2 = GetRandomColor();
+        FillColorDice3 = GetRandomColor();
+        rectX = 30; rectY = 20; rectY2 = 120; rectW = 80;
+        UpdateNumber();
+        //var dm = await GetElementPositionAndDimensions( "svgGr");
+        var dm = await GetElementPositionAndDimensions("divSvg");
+        svgWidth = Convert.ToInt32(dm.width);
+        svgHeight = Convert.ToInt32(dm.height);
+        this.StateHasChanged();
+    }
+
+    private async Task<(double x, double y, double width, double height)> GetElementPositionAndDimensions(string id)
+    {
+        var result = await JSRuntime.InvokeAsync<string>("getElementPositionAndDimensions", id);
+        string[] parts = result.Split(',');
+        for (int i = 0; i < 4; i++)
+        {
+            parts[i] = parts[i].Substring(0, parts[i].IndexOf("."));
+        }
+        return (double.Parse(parts[0]), double.Parse(parts[1]), double.Parse(parts[2]), double.Parse(parts[3]));
+    }
+
+
+    private void SvgWidth(int value)
+    {
+        //svgWidth = value;
+        //svgWidthPct = String.Format("{0:N0}%", (int)((svgWidth * 100.0) / InitialWidth) );    // Este valor (%) esta sendo usado para que o bootstrap funcione
+    }
+    private void SvgHeight(int value)
+    {
+        //svgHeight = value;
+        //svgHeightPct = String.Format("{0:N0}%", (int)((svgHeight * 100.0)/ InitialHeight) );  // Este valor (%) esta sendo calculado mas não estou usando pq o bootstrap bagunça tudo
+    }
+    private void ViewX(int value) => viewX = value;
+    private void ViewY(int value) => viewY = value;
+    private void ViewWidth(int value)
+    {
+        if (centerViewBox)
+        {
+            viewX = (svgWidth - value) / 2;
+            viewWidth = value;
+        }
+        else
+            viewWidth = Convert.ToInt32(value);
+    }
+    private void ViewHeight(int value)
+    {
+        if (centerViewBox)
+        {
+            viewY = (svgHeight - value) / 2;
+            viewHeight = value;
+        }
+        else
+            viewHeight = value;
+    }
+    private void KeepProportionClicked(bool value) => preservRatio = (value ? "" : "none");
+    private void CenterViewBoxClicked(bool value) => centerViewBox = value;
+}

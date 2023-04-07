@@ -1,0 +1,411 @@
+﻿@page "/GaussHistogram";
+@using Syncfusion.Blazor.Charts;
+@using Microsoft.AspNetCore.Components.QuickGrid;
+@using MathNet.Numerics.Distributions;
+
+<!-- Greeting Message -->
+<PageTitle>Gaussian Curves</PageTitle>
+
+<!-- HTML -->
+<div class="box">
+    <div class="row header">
+        <div class="col-12 flexColCenter p-1" style="background-color: #001100;color:antiquewhite">
+            Ploting Gaussian Curves
+        </div>
+    </div>
+    <div class="row header mrgRow flexRowCenter">
+        <div class="col-3 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Challenge</label>
+                <select class="" style="width:100%;height:30px;" @bind=PlotOption>
+                    <option value="-1">Choose challenge</option>
+                    <option value="1">Generate Sample Gaussian Data</option>
+                    <option value="2"></option>
+                    <option value="3"></option>
+                </select>
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="mrgMidElement">
+                <label>Mean(‌&#956;)</label>
+                <input type="number" style="width:100%;height:30px;text-align:center" @bind=mean />
+            </div>
+
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Std Deviation(&#963;)</label>
+                <input type="number" style="width:100%;height:30px;text-align:center" @bind=stdDev />
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Lower Value</label>
+                <input type="number" style="width:100%;height:30px;text-align:center" @bind=InitialValue />
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Highest Value</label>
+                <input type="number" style="width:100%;height:30px;text-align:center" @bind=FinalValue />
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Interval</label>
+                <input type="number" style="width:100%;height:30px;text-align:center" @bind=Binterval min="1" />
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Number of Recs</label>
+                <input type="number" style="width:100%;height:30px;text-align:center" @bind=nRecs />
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Build</label>
+                <button class="btn button btn-outline-success flexColCenter" style="width:100%;height:30px;" @onclick="GenNumbers">
+                    <img src="Icons/plot.ico" width="28" height="21" />
+                </button>
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Reset</label>
+                <button class="btn button btn-outline-info flexColCenter" style="width:100%;height:30px;" @onclick="Reset">
+                    <img src="Icons/reset.ico" width="20" height="20" />
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row content">
+        <div class="col-6">
+            <SfChart Title="Students Height" Background="white">
+                <ChartArea><ChartAreaBorder Width="1"></ChartAreaBorder></ChartArea>
+                <ChartPrimaryXAxis Minimum="@InitialValue" Maximum="@FinalValue" Title="Students Height Distribution" EdgeLabelPlacement="EdgeLabelPlacement.Shift">
+                    <ChartAxisMajorGridLines Width="0"></ChartAxisMajorGridLines>
+                </ChartPrimaryXAxis>
+                <ChartPrimaryYAxis Minimum="0" Maximum="@maxY" Title="Height of Students" Interval="@ticks">
+                    <ChartAxisLineStyle Width="2"></ChartAxisLineStyle>
+                </ChartPrimaryYAxis>
+                <ChartSeriesCollection>
+                    <ChartSeries Name="Heights" DataSource="@ChartPoints" YName="h" Type="Syncfusion.Blazor.Charts.ChartSeriesType.Histogram" 
+                                 BinInterval="Binterval" ShowNormalDistribution="true" ColumnWidth="1.0" ColumnSpacing="0.1" Fill="#4C8E79" >
+                        <ChartMarker Visible="false" Height="7" Width="7">
+                            <ChartDataLabel Visible="true" Position="LabelPosition.Top">
+                                <ChartDataLabelFont Color="#ffffff" FontWeight="600"></ChartDataLabelFont>
+                            </ChartDataLabel>
+                        </ChartMarker>
+                    </ChartSeries>
+                </ChartSeriesCollection>
+                <ChartTooltipSettings Enable="true"></ChartTooltipSettings>
+            </SfChart>
+        </div>
+        <div class="col-6">
+            <div class="row flexRowCenter">
+                <div class="col-2 mrgCol">
+                    <div class="mrgMidElement">
+                        <label>Mean(‌&#956;)</label>
+                        <input type="text" style="width:100%;height:30px;text-align:center" @bind=avgNumbersFmt />
+                    </div>
+                </div>
+                <div class="col-2 mrgCol">
+                    <div class="form-group mrgMidElement">
+                        <label>Std Dev(&#963;)</label>
+                        <input type="text" style="width:100%;height:30px;text-align:center" @bind=stdDevSampleFmt />
+                    </div>
+                </div>
+                <div class="col-2 mrgCol">
+                    <div class="form-group mrgMidElement">
+                        <label># of Recs</label>
+                        <input type="number" style="width:100%;height:30px;text-align:center" @bind=sampleNRecs />
+                    </div>
+                </div>
+                <div class="col-2 mrgCol">
+                    <div class="form-group mrgMidElement">
+                        <label>#Recs / Page</label>
+                        <input type="number" style="width:100%;height:30px;text-align:center" @bind=NRecsPerPage @onclick="RefreshPage" min="1" />
+                    </div>
+                </div>
+                <div class="col-1 ">
+                    <label>Detail</label>
+                    <input type="checkbox" style="text-align:left;width:100%;height:50%;outline:solid 0px red;" @bind=ShowDetail />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 flexColCenter">
+                    <QuickGrid class="titleFont" Items="@QueryableRndGenData" ResizableColumns="true" Pagination="@pagination">
+                        <PropertyColumn Title="ID" Class="titleFont" Property="f => f.RecId" Sortable="true" Align="Align.Left" />
+                        <PropertyColumn Title="Name" Class="titleFont" Property="f => f.RndGenHeight" Sortable="true" Align="Align.Left" />
+                        <PropertyColumn Title="Category" Class="titleFont" Property="f => f.HeightByCat" Sortable="true" Align="Align.Right" />
+                    </QuickGrid>
+                </div>
+
+                <div class="col-12 flexColCenter">
+                    <Paginator Value="@pagination" />
+                </div>
+            </div>
+
+            @if (ShowDetail)
+            {
+                <div class="row">
+                    <div class="col-12 flexColCenter">
+                        <label for="story">Tell us your story:</label>
+                        <textarea id="story" name="story" rows="3" cols="60">@Line</textarea>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="row footer">
+        <div class="col-12 flexColCenter" style="background-color: wheat">@Msg </div>
+    </div>
+</div>
+<!-- CSS -->
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        height: 100%;
+        margin: 0;
+    }
+    .box {
+        display: flex;
+        flex-flow: column;
+        height: 100%;
+        margin: 0;
+    }
+        .box .row {
+            border: 0px dotted #0313fc;
+            margin: 0;
+        }
+
+            .box .row.header {
+                flex: 0 1 40px;
+                border: solid 0px green;
+                margin: 0;
+            }
+
+            .box .row.parms {
+                flex: 0 1 80px;
+                border: solid 0px green;
+                margin: 0;
+            }
+
+            .box .row.content {
+                flex: 1 1 content;
+                border: solid 0px red;
+                margin: 0;
+            }
+
+            .box .row.footer {
+                flex: 0 1 15px;
+                border: solid 1px green;
+                margin: 0;
+                font-size: 11px;
+            }
+
+    .flexColStart {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+        color: blue;
+    }
+
+    .flexColCenter {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: black;
+    }
+
+    .flexRowStart {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: left;
+        color: black;
+    }
+
+    .flexRowCenter {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: center;
+        color: black;
+    }
+
+    .flexRowEnd {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: right;
+        color: black;
+    }
+
+    .mrgRow {
+        margin-top: 0;
+        margin-right: 0px;
+        margin-bottom: 0px;
+        margin-left: 0px;
+        padding-left: 12px;
+        padding-right: 12px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+
+    .mrgCol {
+        margin-top: 0;
+        margin-right: 0px;
+        margin-bottom: 0px;
+        margin-left: 0px;
+        padding-left: 2px;
+        padding-right: 2px;
+        padding-top: 1px;
+        padding-bottom: 4px;
+    }
+
+    .mrgMidElement {
+        margin-top: 0;
+        margin-right: 0px;
+        margin-bottom: 0px;
+        margin-left: 0px;
+        padding-left: 1px;
+        padding-right: 1px;
+    }
+
+    label {
+        font-size: 11px;
+        color: red;
+    }
+
+    .titleFont {
+        color: darkolivegreen;
+        font-family: 'Montserrat';
+        font-size: 1.1em;
+    }
+</style>
+<!-- C# code -->
+@code {
+    string Msg = "";
+    double @maxY = 20;
+    int    nRecs = 200;
+    int ticks = 5;
+
+    double mean = 180, stdDev = 10;
+    double InitialValue = 150, FinalValue = 210;
+    int    Binterval = 1;
+    string PlotOption = "1";
+    string Line = "";
+
+    //  Grid related variables
+    string avgNumbersFmt = "";
+    string stdDevSampleFmt = "";
+    int    sampleNRecs = 0;
+    static int NRecsPerPage = 12;
+
+    PaginationState pagination = new PaginationState { ItemsPerPage = NRecsPerPage };
+    IQueryable<SampleData> QueryableRndGenData
+    {
+        get
+        {
+            var result = RndGenData.AsQueryable();    //  If no filters apply this will be the result
+            return result!;
+        }
+    }
+
+    public class SampleData
+    {
+        public int RecId { get; set; }
+        public double RndGenHeight { get; set; }
+        public double HeightByCat { get; set; }
+    }
+    public List<SampleData> RndGenData = new List<SampleData>();
+    bool ShowDetail = false;
+
+    public class Data
+    {
+        public double h { get; set; }
+    }
+    public List<Data> ChartPoints = new List<Data> { new Data { h = 0 } };
+
+    private void GenNumbers()
+    {
+        try
+        {
+            //  Instatiates normal class
+            var normal = new Normal(mean, stdDev);
+            //  Generates a number of recs values gauss distributed
+            double[] RndGenNums = normal.Samples()
+                                    .Where(x => (InitialValue <= x) && (x <= FinalValue))
+                                    .Take(nRecs)
+                                    .ToArray();
+            // Show quick Grid
+            RndGenData = new();
+            foreach (double d in RndGenNums)
+                RndGenData.Add(new SampleData
+                    {
+                        RecId = RndGenData.Count(),
+                        RndGenHeight = d,
+                        HeightByCat = Math.Floor(d)
+                    });
+
+            //  Evaluates mean and stdDev of the sample to compare with requested values.
+            double avgNumbers = RndGenNums.Average(x => x);
+            sampleNRecs = RndGenNums.Count();
+            double sumSqr = RndGenNums.Sum(x => (x - avgNumbers) * (x - avgNumbers));
+            double stdDevSample = Math.Sqrt(sumSqr / sampleNRecs);
+
+            avgNumbersFmt = avgNumbers.ToString("N2");
+            stdDevSampleFmt = stdDevSample.ToString("N2");
+
+            //  Arrange data by categories
+            double[] RndNumCat = RndGenNums
+                                    .Select(x => Math.Floor(x))
+                                    .ToArray();
+            // Move data to chart
+            ChartPoints = new(); ChartPoints.Add(new Data { h = 150 }); // Value to force begin of class at Initialvalue
+            foreach (double i in RndNumCat)
+                ChartPoints.Add(new Data { h = i });
+
+            //  Group categorized numbers and get most frequent value - modal
+            var groupedNumbers = RndNumCat
+                                    .OrderBy(x => x)
+                                    .GroupBy(x => (int)(x / Binterval) * Binterval)
+                                    .Select(g => new { X = g.Key, Y = g.Count(), g });
+            maxY = groupedNumbers.Select(g => g.Y).Max() + 1;
+            ticks = (maxY > 200 ? 20 : maxY > 100 ? 15 : maxY > 50 ? 10 : 5);
+            maxY = maxY + ticks;
+
+            //  Move raw data to text area
+            Line = "";
+            foreach (var group in groupedNumbers)
+            {
+                Line += "Key: " + group.X + " ";
+                Line += "Count: " + group.Y + " ";
+                Line += "Items: " + string.Join(", ", group.g) + "\n";
+            }
+        }
+        catch (Exception ex) { Msg = ex.Message; }
+    }
+    private void RefreshPage() => pagination.ItemsPerPage = NRecsPerPage;
+    private void Reset()
+    {
+        mean = 180;
+        stdDev = 10;
+        InitialValue = 150;
+        FinalValue = 210;
+
+        RndGenData = new();
+        ChartPoints = new();
+        Line = "";
+
+        PlotOption = "-1";
+    }
+}

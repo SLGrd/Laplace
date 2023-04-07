@@ -1,0 +1,509 @@
+﻿@page "/CovarCorr"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Syncfusion.Blazor.Charts;
+@using static Laplace.Models.CsvData;
+@using static Laplace.Code
+@using static System.Math;
+
+<!-- Greeting Message -->
+<PageTitle>Covariance && Correlation</PageTitle>
+<!-- HTML -->
+<div class="box">
+    <div class="row header">
+        <div class="col-12 flexColCenter pt-2 " style="background-color: #001100;color:antiquewhite; height:40px;">
+            <h5>Covariância & Correlação</h5>
+        </div>
+    </div>
+    <div class="row parms flexRowCenter pb-2" style="border: solid green 1px;">
+        <div class="col-2 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Csv File A - VALE</label>
+                <input type="text" style="font-size:12px;width:100%;height:30px;text-align:center" @bind=@PathFileA />
+            </div>
+        </div>
+        <div class="col-2 mrgCol">
+            <div class="mrgMidElement">
+                <label>Csv File B - Iron Ore</label>
+                <input type="text" style="font-size:12px;width:100%;height:30px;text-align:center" @bind=@PathFileB />
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Load Files</label>
+                <button class="btn button btn-outline-success flexColCenter" style="width:100%;height:30px;" @onclick="LoadFiles">
+                    <img src="Icons/reset.ico" width="20" height="20" />
+                </button>
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Number of Recs</label>
+                <input type="number" style="width:100%;height:30px;text-align:center" min="0" @bind=@countRows />
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Table</label>
+                <button class="btn button btn-outline-success flexColCenter" style="width:100%;height:30px;" @onclick="SetTables">
+                    <img src="Icons/plot.ico" width="20" height="20" />
+                </button>
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Line Chart</label>
+                <button class="btn button btn-outline-success flexColCenter" style="width:100%;height:30px;" @onclick="SetLineChart">
+                    <img src="Icons/plot.ico" width="20" height="20" />
+                </button>
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Scattered Chart</label>
+                <button class="btn button btn-outline-success flexColCenter" style="width:100%;height:30px;" @onclick="SetCorrelationChart">
+                    <img src="Icons/plot32.png" width="20" height="20" />
+                </button>
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label># Recs / Page</label>
+                <input type="number" style="width:100%;height:30px;text-align:center" @bind=NRecsPerPage @onclick="RefreshPage" min="1" />
+            </div>
+        </div>
+    </div>
+    @if (ChartOrTable == "Table")
+    {
+        <div class="row content">
+            <div class="col-12 flexColCenter">
+                <QuickGrid class="titleFont" Items="QueryableImported" ResizableColumns="true" Pagination="@pagination">
+                    <PropertyColumn Title="Data" Class="FontBlack" Property="f => f.Data" Format="d" Sortable="true" Align="Align.Left" />
+                    <PropertyColumn Title="Vale" Class="FontBlack" Property="f => f.QuoteVale" Format="N2" Sortable="true" Align="Align.Right" />
+                    <PropertyColumn Title="Iron" Class="FontBlack" Property="f => f.QuoteIron" Format="N2" Sortable="true" Align="Align.Right" />
+                    <PropertyColumn Title="&#916; Vale" Class="FontBlue" Property="f => f.AvgDeltaVale" Format="N2" Sortable="true" Align="Align.Right" />
+                    <PropertyColumn Title="&#916; Iron" Class="FontBlue" Property="f => f.AvgDeltaIron" Format="N2" Sortable="true" Align="Align.Right" />
+                    <PropertyColumn Title="&#963;XY" Class="FontBlue" Property="f => f.Covar" Format="N2" Sortable="true" Align="Align.Right" />
+                    <PropertyColumn Title="&#963;&#916; Vale" Class="FontBlue" Property="f => f.AvgDeltaSigmaVale" Format="N2" Sortable="true" Align="Align.Right" />
+                    <PropertyColumn Title="&#963;&#916; Iron" Class="FontBlue" Property="f => f.AvgDeltaSigmaIron" Format="N2" Sortable="true" Align="Align.Right" />
+                    <PropertyColumn Title="&#963;&#916; Correl" Class="FontBlue" Property="f => f.Corr" Format="N2" Sortable="true" Align="Align.Right" />
+                </QuickGrid>
+                <Paginator Value="@pagination" />
+            </div>
+            <div class="col-12 flexRowCenter">
+                <div class="col-1 mrgCol">
+                    <div class="form-group mrgMidElement">
+                        <label>Count (Vale)</label>
+                        <input type="text" style="width:100%;height:30px;text-align:center" value=@countRows />
+                    </div>
+                </div>
+                <div class="col-1 mrgCol">
+                    <div class="form-group mrgMidElement">
+                        <label>Min (Vale)</label>
+                        <input type="text" style="width:100%;height:30px;text-align:center" value=@($"{minQuoteVale:N2}") />
+                    </div>
+                </div>
+                <div class="col-1 mrgCol">
+                    <div class="form-group mrgMidElement">
+                        <label>Max (Vale)</label>
+                        <input type="text" style="width:100%;height:30px;text-align:center" value=@($"{maxQuoteVale:N2}") />
+                    </div>
+                </div>
+                <div class="col-1 mrgCol">
+                    <div class="form-group mrgMidElement">
+                        <label>Mean (Vale)</label>
+                        <input type="text" style="width:100%;height:30px;text-align:center" value=@($"{avgVale:N2}") />
+                    </div>
+                </div>
+                <div class="col-1 mrgCol">
+                    <div class="form-group mrgMidElement">
+                        <label>StdDev (Vale)</label>
+                        <input type="text" style="width:100%;height:30px;text-align:center" value=@($"{stdDevVale:N2}") />
+                    </div>
+                </div>
+                <div class="col-1 mrgCol">
+                    <div class="form-group mrgMidElement">
+                        <label>Covariance &#963;XY</label>
+                        <input type="text" style="width:100%;height:30px;text-align:center" value=@($"{Covariance:N4}") />
+                    </div>
+                </div>
+                <div class="col-1 mrgCol">
+                    <div class="form-group mrgMidElement">
+                        <label>Correlation &#963;XY</label>
+                        <input type="text" style="width:100%;height:30px;text-align:center" value=@($"{Correlation:N4}") />
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 flexRowCenter">
+                <div class="col-1 mrgCol">
+                    <div class="form-group mrgMidElement">
+                        <label>Count (Iron)</label>
+                        <input type="text" style="width:100%;height:30px;text-align:center" value=@countRows />
+                    </div>
+                </div>
+                <div class="col-1 mrgCol">
+                    <div class="form-group mrgMidElement">
+                        <label>Min (Iron)</label>
+                        <input type="text" style="width:100%;height:30px;text-align:center" value=@($"{minQuoteIron:N2}") />
+                    </div>
+                </div>
+                <div class="col-1 mrgCol">
+                    <div class="form-group mrgMidElement">
+                        <label>Max (Iron)</label>
+                        <input type="text" style="width:100%;height:30px;text-align:center" value=@($"{minQuoteIron:N2}") />
+                    </div>
+                </div>
+                <div class="col-1 mrgCol">
+                    <div class="form-group mrgMidElement">
+                        <label>Mean (Iron)</label>
+                        <input type="text" style="width:100%;height:30px;text-align:center" value=@($"{avgIron:N2}") />
+                    </div>
+                </div>
+                <div class="col-1 mrgCol">
+                    <div class="form-group mrgMidElement">
+                        <label>StdDev (Iron)</label>
+                        <input type="text" style="width:100%;height:30px;text-align:center" value=@($"{stdDevIron:N2}") />
+                    </div>
+                </div>
+                <div class="col-1 mrgCol">
+                    <div class="form-group mrgMidElement">
+                        <label>Covariance &#963;XY</label>
+                        <input type="text" style="width:100%;height:30px;text-align:center" value=@($"{Covariance:N4}") />
+                    </div>
+                </div>
+                <div class="col-1 mrgCol">
+                    <div class="form-group mrgMidElement">
+                        <label>Correlation &#963;XY</label>
+                        <input type="text" style="width:100%;height:30px;text-align:center" value=@($"{Corr2:N4}") />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    @if (ChartOrTable == "Correlation")
+    {
+        <div class="row content">
+            <div class="col-12 flexColCenter">
+                <SfChart id="container" Width="100%" Title="VALE Stock Price vs IRON Ore Quote Correlation">
+                    <ChartArea><ChartAreaBorder Width="1"></ChartAreaBorder></ChartArea>
+
+                    <ChartPrimaryXAxis Title="VALE Stock Price" Minimum="@minQuoteValeCht" Maximum="@maxQuoteValeCht" Interval="5" >
+                        <ChartAxisMajorGridLines Width="1"></ChartAxisMajorGridLines>
+                    </ChartPrimaryXAxis>
+
+                    <ChartPrimaryYAxis Title="Iron Ore Price" Minimum="@minQuoteIronCht" Maximum="@maxQuoteIronCht" Interval="5" >
+                        <ChartAxisMajorTickLines Width="1"></ChartAxisMajorTickLines>
+                        <ChartAxisLineStyle Width="1"></ChartAxisLineStyle>
+                    </ChartPrimaryYAxis>
+
+                    <ChartTooltipSettings Enable="true" Header="Quotes" Format="<b>${series.name} : ${point.y} ${point.x}"></ChartTooltipSettings>
+                    <ChartLegendSettings Visible="false" EnableHighlight="true"></ChartLegendSettings>
+
+                    <ChartSeriesCollection>
+                        <ChartSeries DataSource="@ImportedData" Name="Correlation" Fill="#8B4513" 
+                                XName="QuoteVale" Width="2" YName="QuoteIron" Type="ChartSeriesType.Scatter">
+                            <ChartMarker Height="10" Width="10" Fill="#8B4513" Shape="ChartShape.Circle"></ChartMarker>
+                        </ChartSeries>
+                    </ChartSeriesCollection>
+                    
+                </SfChart>                
+            </div>
+        </div>
+    }
+    @if (ChartOrTable == "Line")
+    {
+        <div class="row content">
+            <div class="col-12 flexColCenter m-0 p-0">
+                <SfChart id="container" Width="100%" Title="VALE Stock Price vs IRON Ore Quote Correlation">
+                    <ChartArea><ChartAreaBorder Width="1"></ChartAreaBorder></ChartArea>
+
+                    <ChartPrimaryXAxis Interval="1" Title="Date" ValueType="Syncfusion.Blazor.Charts.ValueType.DateTime" LabelFormat="yy/MM/dd">                      
+                        <ChartAxisMajorGridLines Width="1"></ChartAxisMajorGridLines>                       
+                    </ChartPrimaryXAxis>
+
+                    <ChartPrimaryYAxis Minimum="minQuoteValeCht" Maximum="maxQuoteValeCht" Interval="10" Title="Vale / Iron Prices">
+                        <ChartAxisMajorTickLines Width="1"></ChartAxisMajorTickLines>
+                        <ChartAxisLineStyle Width="1"></ChartAxisLineStyle>
+                    </ChartPrimaryYAxis>
+
+                    <ChartTooltipSettings Enable="true" Header="Quotes" Format="<b>${series.name} : ${point.x} ${point.y} </b>"></ChartTooltipSettings>
+                    <ChartLegendSettings Visible="true" EnableHighlight="true"></ChartLegendSettings>
+                    
+                    <ChartSeriesCollection>
+                        <ChartSeries DataSource="@ImportedData" Name="Vale" Fill="#ff0000"
+                                XName="Data" Width="2" YName="QuoteVale" Type="ChartSeriesType.Line">
+                            <ChartMarker Visible="false" Height="3" Width="3" />
+                            <ChartSeriesAnimation Enable="false" ></ChartSeriesAnimation>
+                        </ChartSeries>
+                        <ChartSeries DataSource="@ImportedData" Name="Iron" Fill="#202040"
+                                XName="Data" Width="2" YName="QuoteIron" Type="ChartSeriesType.Line">
+                            <ChartMarker Visible="true" Height="10" Width="10" />                            
+                            <ChartSeriesAnimation Enable="false" ></ChartSeriesAnimation>
+                        </ChartSeries>
+                    </ChartSeriesCollection>                 
+                </SfChart>
+            </div>
+        </div>
+    }
+    <div class="row footer">
+        <div class="col-12 flexColCenter">@Msg</div>
+    </div>
+</div>
+<!-- CSS -->
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        height: 100%;
+        margin: 0;
+    }
+    .box {
+        display: flex;
+        flex-flow: column;
+        height: 100%;
+        margin: 0;
+        max-height: 100vh;
+    }
+        .box .row {
+            border: 0px dotted #0313fc;
+            margin: 0;
+        }
+            .box .row.header {
+                flex: 0 0 0px;
+                border: solid 0px green;
+                margin: 0;
+            }
+            .box .row.parms {
+                flex: 0 1 0px;
+                border: solid 0px green;
+                margin: 0;
+            }
+            .box .row.content {
+                flex: 1 1 content;
+                border: solid 0px red;
+                margin: 0;
+            }
+            .box .row.footer {
+                flex: 0 1 15px;
+                border: solid 1px green;
+                margin: 0;
+                font-size: 11px;
+            }
+
+    .flexColStart {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+        color: blue;
+    }
+    .flexColCenter {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: black;
+    }
+    .flexRowStart {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: left;
+        color: black;
+    }
+    .flexRowCenter {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: center;
+        color: black;
+    }
+    .flexRowEnd {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: right;
+        color: black;
+    }
+    .mrgRow {
+        margin: 0;
+        padding: 0 12px 0 12px;
+    }
+    .mrgCol {
+        margin: 0;
+        padding: 1px 2px 4px 2px;
+    }
+    .mrgMidElement {
+        margin: 0;
+        padding : 0 2px 0 2px;
+    }
+    label {
+        font-size: 11px;
+        color: red;
+    }
+    input {
+        font-size: 14px;
+        color: darkblue;
+    }
+    .FontBlack {
+        color:  black;
+        font-family: 'Montserrat';
+        font-size: 1.05em;
+    }
+    .FontBlue{
+        color: royalblue;
+        font-family: 'Montserrat';
+        font-size: 1.05em;
+    }
+</style>
+@code {
+    string ChartOrTable = "Table", Msg = "";
+    string PathFileA = @"D:\Tutorials\Methods\Csv2List\Data\Vale.csv";
+    string PathFileB = @"D:\Tutorials\Methods\Csv2List\Data\Iron.csv";    
+    static int NRecsPerPage = 20;
+
+    List<EodValues> Vale = new();
+    List<EodValues> Iron = new();
+    List<GrdLine> ImportedData = new List<GrdLine>();
+
+    int countRows = 0;
+    double minQuoteVale = 0, minQuoteIron = 0, maxQuoteVale = 0, maxQuoteIron = 0;   
+    double avgVale = 0, avgIron = 0, stdDevVale = 0, stdDevIron = 0;
+    double Covariance = 0, Correlation = 0, Corr2 = 0, Corr3 = 0;
+
+    PaginationState pagination = new PaginationState { ItemsPerPage = NRecsPerPage };
+    IQueryable<GrdLine> QueryableImported
+    {
+        get { return ImportedData.AsQueryable(); } // If no filters apply this will be the result            
+    }
+    private void LoadFiles()
+    {
+        Msg = "";               // Clear msg field
+        ChartOrTable = "Table"; // Set default
+                                //  Imports csv format data downloaded from internet marketdata providers
+        try
+        {
+            Vale = ParseCsvValues(PathFileA);
+            Iron = ParseCsvValues(PathFileB);
+        }
+        catch (Exception ex) { Msg = ex.Message; return; }
+
+        try
+        {
+            //  Clear Tables
+            ImportedData.Clear();
+            for (int i = 0; i < Vale.Count; i++)
+            {
+                EodValues? d = Iron.Where(r => r.Data == Vale[i].Data).FirstOrDefault();
+                if (d is not null)
+                {
+                    ImportedData.Add(new GrdLine(Vale[i].Data, Vale[i].Ultimo, d.Ultimo, i, 0));
+                }
+            }
+            CalculateTableValues();
+        }
+        catch (Exception ex) { string Msg = ex.Message; }
+    }
+    private void CalculateTableValues()
+    {
+        try
+        {
+            //  Number of records
+            countRows = ImportedData.Count();
+            // ----------------------------------------------------------------------------
+            // Qdo calculamos o valor de uma grandeza usando todos os dados da população
+            // usamos =====>>>>> countRows 
+            // Qdo estivermos calculando ESTIMADOR de uma grandeza a partir de uma amostra 
+            // dos de dados de uma população
+            // usamos =======>>> countRows - 1
+
+            // Estes cálculos foram feitos com todos os dados ou seja população
+            // Para calcular o valor como ESTIMADOR use o metodo 1 com : countRows = countRows - 1 
+            // -----------------------------------------------------------------------------------
+
+            //  Calculo das medias
+            avgVale = ImportedData.Average(x => x.QuoteVale);
+            avgIron = ImportedData.Average(x => x.QuoteIron);
+            //  Calculo do desvio padrao em duas etapas
+            double sumSqDiffVale = ImportedData.Sum(x => (x.QuoteVale - avgVale) * (x.QuoteVale - avgVale));
+            double sumSqDiffIron = ImportedData.Sum(x => (x.QuoteIron - avgIron) * (x.QuoteIron - avgIron));
+            stdDevVale = (countRows  > 0 ? Math.Sqrt(sumSqDiffVale / (countRows )) : 0);  // check division by zero
+            stdDevIron = (countRows  > 0 ? Math.Sqrt(sumSqDiffIron / (countRows )) : 0);  // check division by zero
+
+            //  Metodo 1 - using standard deviation ===================================================================
+            //  Delta Vale = Quote - avgVale and other columns calculations
+            ImportedData = ImportedData.Select(x =>
+            {
+                x.AvgDeltaVale = x.QuoteVale - avgVale;
+                x.AvgDeltaIron = x.QuoteIron - avgIron;
+                x.Covar = x.AvgDeltaVale * x.AvgDeltaIron;
+                x.AvgDeltaSigmaVale = x.AvgDeltaVale / stdDevVale;
+                x.AvgDeltaSigmaIron = x.AvgDeltaIron / stdDevIron;
+                x.Corr = x.AvgDeltaSigmaVale * x.AvgDeltaSigmaIron;
+                return x;
+            }).ToList();
+            Covariance = ImportedData.Average(x => x.Covar);
+            Correlation = ImportedData.Average(x => x.Corr);
+
+            // Método 2 - Using formula [n∑XY - (∑X)(∑Y)] / sqrt[(n∑X^2 - (∑X)^2)(n∑Y^2 - (∑Y)^2)] =====================            
+            double totQuoteVale = ImportedData.Sum(x => x.QuoteVale);
+            double totQuoteIron = ImportedData.Sum(x => x.QuoteIron);
+
+            double p1 = ImportedData.Sum(x => x.QuoteVale * x.QuoteIron); 
+            double p2 = totQuoteVale * totQuoteIron;
+            double p3 = ImportedData.Sum(x => Pow(x.QuoteVale, 2));
+            double p4 = Pow(totQuoteVale, 2);
+            double p5 = ImportedData.Sum(y => Pow(y.QuoteIron, 2));
+            double p6 = Pow(totQuoteIron, 2);                
+            // [n∑XY - (∑X)(∑Y)] / sqrt[(n∑X^2 - (∑X)^2)(n∑Y^2 - (∑Y)^2)]
+            Corr2 = (countRows * p1 - p2) / Sqrt( (countRows * p3 - p4) * (countRows * p5 - p6) );
+
+            // Método 3 - Using formula sum[(x - meanX) * ( y - meanY)] / [Sqrt(sum(x - meanX) ^2) * Sqrt(sum(y - meanY) ^2)]; ==
+            double v1 = ImportedData.Sum(x => (x.QuoteVale - avgVale) * ( x.QuoteIron - avgIron));            
+            double v2 = ImportedData.Sum(x => Pow((x.QuoteVale - avgVale), 2) );
+            double v3 = ImportedData.Sum(y => Pow((y.QuoteIron - avgIron), 2) );
+
+            Corr3 = v1 / (Sqrt(v2) * Sqrt(v3));
+
+            //  Prepares chart values for X and Y axis min e max range
+            minQuoteVale = ImportedData.Min(x => x.QuoteVale);
+            minQuoteIron = ImportedData.Min(x => x.QuoteIron);
+            maxQuoteVale = ImportedData.Max(x => x.QuoteVale);
+            maxQuoteIron = ImportedData.Max(x => x.QuoteIron);
+        }
+        catch (Exception ex) { string Msg = ex.Message; }
+    }
+    private void RefreshPage() => pagination.ItemsPerPage = NRecsPerPage;
+    private void Reset() { }
+
+    //  ===============================  Chart Section  =================================================
+    int minQuoteValeCht = 0, minQuoteIronCht = 0, maxQuoteValeCht = 0, maxQuoteIronCht = 0;
+
+    public void SetTables()
+    {
+        ChartOrTable = "Table";
+    }
+    public void SetCorrelationChart()
+    {
+        ChartOrTable = "Correlation";
+
+        //  Set X and Y axis initial values to round numbers
+        minQuoteValeCht = (int)Math.Floor( minQuoteVale /  5) * 5;
+        minQuoteIronCht = (int)Math.Floor( minQuoteIron / 10) * 10;
+        maxQuoteValeCht = (int)Math.Ceiling( maxQuoteVale) + 1;
+        maxQuoteIronCht = (int)Math.Ceiling( maxQuoteIron) + 1;
+    }
+    public void SetLineChart()
+    {
+        ChartOrTable = "Line";
+        //  Set X and Y axis initial values to round numbers
+        minQuoteValeCht = (int)Math.Floor(minQuoteVale / 5) * 5;
+        minQuoteIronCht = (int)Math.Floor(minQuoteIron / 10) * 10;
+        maxQuoteValeCht = (int)Math.Ceiling(maxQuoteVale) + 1;
+        maxQuoteIronCht = (int)Math.Ceiling(maxQuoteIron) + 1;
+        //  Como as duas séries compartilham o mesmo eixo escolhemos o extremo
+        minQuoteValeCht = Math.Min(minQuoteValeCht, minQuoteIronCht);
+        maxQuoteValeCht = Math.Max(maxQuoteValeCht, maxQuoteIronCht);
+    }
+}

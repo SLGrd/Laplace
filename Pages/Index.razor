@@ -1,23 +1,248 @@
 ﻿@page "/"
 
 <PageTitle>Index</PageTitle>
-
 <!-- HTML -->
 <div class="container-fluid h100" style="background-color:lightgray;overflow-y:auto;">
     <div class="row">
         <div class="col-12 flexColCenter">
-            <h1>Fundamentos de Modelo Probabilistico</h1>
-            <h2> using QUICKGRID Net 7.0</h2>
-            <p>This is an Open Source Datagrid Component developed by Microsoft, maybe, to be a prt NET 7.</p>
+            <h1>Fundamentos de Modelo Probabilístico</h1>
+            <h2>using Syncfusion charts, QuickGrid, C# Net 7.0</h2>
         </div>
     </div>
-    <div class="row m-0 p-0">        
-        <div class="col-12 flexColCenter">
+    <div class="row m-0 p-0">
+        <div class="col-4"></div>
+        <div class="col-4 flexColCenter">
             <a title="Sophie Feytaud (fl.1841), Public domain, via Wikimedia Commons"
                href="https://commons.wikimedia.org/wiki/File:Pierre-Simon_Laplace.jpg">
-                    <img width="512" alt="Pierre-Simon Laplace" src="https://upload.wikimedia.org/wikipedia/commons/e/e3/Pierre-Simon_Laplace.jpg">
+                <img width="480" alt="Pierre-Simon Laplace" src="https://upload.wikimedia.org/wikipedia/commons/e/e3/Pierre-Simon_Laplace.jpg">
             </a>
         </div>
+        <div class="col-4 flexColCenter">
+            <p class="pHigh">
+                Nós podemos tomar o estado presente do universo como o efeito do seu passado e a causa do seu futuro.
+            </p>
+            <p>
+                Um intelecto que, em dado momento, conhecesse todas as forças que dirigem a natureza e todas as posições
+                de todos os itens dos quais a natureza é composta, se este intelecto também fosse vasto o suficiente para
+                analisar essas informações, compreenderia numa única fórmula os movimentos dos maiores corpos do universo
+                e os do menor átomo; para tal intelecto nada seria incerto e o futuro, assim como o passado,
+                seria presente perante seus olhos
+            </p>
+            <p>
+                Pierre Simon Laplace
+            </p>
+        </div>
+    </div>
+    <div class="container">
+        <br />
+        <h4>Modelagem Probabilística</h4>
+        <br />
+        <p>
+            Modelagem probabilística é uma abordagem estatística para estudo de fenômenos que não possuem uma clara
+            relação determínistica entre a causa e o efeito dos seus resultados.
+        </p>
+        <p>
+            Fenômenos fisicos simples relacionam causa e efeito através de uma equação. Se vc aplicar um impulso
+            a um objeto dentro de condições conhecidas vc obterá o resultado calculado.
+            Por outro lado, o lançamento de um dado é sujeito a tantas condições que o resultado é imprevisivel.
+            É deste tipo de fênomeno que a estatística se ocupa, onde existe a incerteza e o imprevisivel.
+            Como exemplos citamos a previsão do tempo, previsão das vendas do proximo semestre, uma aposta na roleta e por ai vai.
+        </p>
+        <p>
+            Mas, antes de prosseguir, vou tentar reproduzir um pensamento de Laplace, fazendo o menor estrago possivel.
+            De acordo com o matemático, o lançamento de um dado seria um experimento absolutamente
+            determínistico e portanto previsivel. O exemplo que ele usou foi outro mas fica claro o que ele quis dizer.
+            Se vc reproduzir todas, todas as milhares condições do lançamento de um dado êle vai produzir sempre o mesmo
+            resultado. O problema é que, dada a sensibilidade do fênomeno a uma série enorme de condições, nós não temos
+            nem computador e nem o conhecimento suficiente para antecipar o futuro.
+        </p>
+        <p>
+            O avanço da ciência e tecnologia pode mudar tudo. Os rifles de alta precisão disponiveis atualmente consideram
+            até a rotação da terra para determinar a posição do tiro. Neste caso, se o evento for defindo como impacto
+            num muro de 2 x 2 metros a 500 metros de distância o experimento é determinístico. Êle vai acertar todos os
+            tiros e o seu campo de estudo mais adequado é a física.
+        </p>
+        <p>
+            Mas, neste mesmo experimento, se considerarmos como evento um impacto a menos de 2 milimetros do centro êle
+            passa a se comportar como imprevisivel. Ou seja, na verdade o fenômeno em si não é imprevisivel ou determínistico.
+            Nossa capacidade de monitorar todas as condições do experimento é que o torna imprevisivel ou determínistico.
+
+            Quando o resultado é imprevisivel, nas condições do experimento, dizemos que o fênomeno é aleatório ou randômico.
+        </p>
+        <br />
+        <p class="pHigh">
+            Como estudar Fenômenos Aleatórios
+        </p>
+        <p>
+            Alguns fenômenos aleatórios ou randômicos se prestam a estudo usando uma abordagem estatística e outros não.
+            <br /><br />
+            A razão principal é ausência de um padrão de comportamento onde citamos como exemplo  a cotação do dolar e as
+            cotações da bolsa de valores. Muita gente tem tentado usar uma abordagem estatística para esta questão. Existem
+            livros sobre isto mas, que eu saiba, sem grande sucesso. Se alguém conseguiu não contou para ninguém.
+            <br /><br />
+            <strong>
+                Fenômenos aleatórios ou randômicos, mesmo apresentando resultados imprevisiveis, podem ser estudados dentro da
+                abordagem estatística que estamos apresentando desde se consiga identificar um padrão de comportamento
+                consistente.
+            </strong>
+            <br /><br />
+            No caso do arremesso de dados não conseguimos prever o resultado mas sabemos que todos os números tendem a
+            aparecer aproximadamente o mesmo número de vezes ao longo de uma série de tentativas. Para expressar este padrão
+            de comportamento os matemáticos desenvolveram o conceito de probabilidade.
+        </p><br />
+        <p class="pHigh">
+            O que é Probabilidade
+        </p>
+        <p>
+            Para estimar com qual frequência um determinado evento ocorre usamos um número que denominamos probabilidade.
+            Este número é calculado por dedução, suposição ou observação.
+        </p>
+        <p>
+            Analisando um dado com seis faces deduzimos que a frequência de ocorrência de cada um dos números deve ser a mesma.
+            Não conseguimos ver nenhuma razão para ser diferente. Um pouco de tinta num dos lados do dado não deve ser razão
+            suficiente para alterar muita coisa.
+        </p>
+        <p>
+            Após milhares de experimentos obervarmos que não existe ocorrência de um lado prevalecendo sobre os demais. A
+            observação confirmou a dedução. Se isto não se verificar, a observação conflita com a dedução e teremos
+            que reavaliar nossa hipótese.
+        </p>
+        <p>
+            Aqui aparece o conceito de probabilidade. Sem tentar definir vamos dizer que :
+            <strong>
+                <br /><br />
+                Probabilidade de um determinado evento é um número entre 0 e 1 que indica qual a frequência esperada para ocorrência
+                deste evento após a realização de um certo número de experimentos.
+            </strong><br /><br />
+            No nosso exemplo, num dado de seis faces dizemos que a probabilidade de ocorrência de cada uma das faces é igual a 1
+            sobre 6. No caso 1 é o número de possibilidades que nos interessa e 6 é o número de casos possiveis.
+        </p><br/>
+        <p class="pHigh">
+           Axiomas e Postulados
+        </p>
+        <p>
+            Podemos agora aprofundar nossa conceituação de probabilidade e examinar os postulados e axiomas pertinentes.
+            <br /><br />
+            Axiomas são afirmações amplamente aceitas, sem provas formais. Axiomas são afirmações amplamente aceitas porque
+            sua formulação não conflita com aquilo que cada um de nós concluiu, pelas experiências vividas, ser verdadeiro.
+            <br /><br />
+            São 3 os postulados e axiomas da probabilidade.
+        </p>
+        <p class="pHigh pIndent">
+            1.	A probabilidade de um evento é um número real compreendido entre 0 e 1
+        </p>
+        <p class="pHigh text-center">
+            <span> 0 &lt= P(E) &lt= 1 </span>
+        </p>
+        <p class="text-center">
+            0 representa um evento impossivel e 1 representa uma certeza absoluta.
+        </p>
+        <p class="pHigh pIndent">
+            2.  A probabilidade de um evento coincidente com o espaço amostral é 1.
+        </p>
+        <p class="pHigh text-center">
+            P(Omega) = 1
+        </p>
+        <p class="text-center">
+            onde o espaço amostral ou sample space é o conjunto de todos os resultados possiveis.
+        </p>
+        <p class="pHigh pIndent">
+            3.	A probabilidade de dois eventos disjuntos é a soma da probabilidade de cada um deles.
+        </p>
+        <p class="pHigh text-center">
+            P(A U B) = P(A) + P(B)
+        </p>
+        <p class="pIndent text-center">
+            ex	P(A) onde A = { 1 }  é igual 1 / 6;
+        </p>
+        <p class="pIndent text-center">
+            P(B) onde B = { 2 }  é igual 1 / 6
+        </p>
+        <p class="pIndent text-center">
+            temos P( A U B ) igual a 2 / 6 ou 1 / 3
+        </p><br/>
+        <p>
+            Estes axiomas nos permitem deduzir algumas leis que, por sua vez, nos permitem deduzir as probabilidades de eventos mais
+            complexos como veremos no decorrer do nosso estudo.
+        </p>
+        <p>
+            Antes de prosseguir vamos estabelecer uma terminologia pra facilitar nossa comunicação em portugues e ingles:
+        </p>
+
+        <table class="table table-striped ">
+            <colgroup>                
+                <col span="1" style="width: 25%;">
+                <col span="1" style="width: 25%;">
+                <col span="1" style="width: 50%;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Nome </th>
+                    <th>Name </th>
+                    <th>Significado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Desafio</td>
+                    <td>Challenge</td>
+                    <td>A hipotese que queremos verificar. Ex. Testar a viabilidade de um novo jogo</td>
+                </tr>
+                <tr>
+                    <td>Experimento</td>
+                    <td>Experiment</td>
+                    <td>O conjunto de todos os testes efetuados</td>
+                </tr>
+                <tr>
+                    <td>Espaço amostral</td>
+                    <td>Sample space</td>
+                    <td>O conjunto de todas as ocorrências possiveis  No caso de um dado { 1, 2, ,3, 4, 5 e 6 }</td>
+                </tr>
+                <tr>
+                    <td>Ensaio</td>
+                    <td>Trial</td>
+                    <td>Girar uma roleta, arremesso de um dado, um tiro</td>
+                </tr>
+                <tr>
+                    <td>Resultado</td>
+                    <td>Outcome</td>
+                    <td>ocorrência do trial. Ex. Saiu o número 2</td>
+                </tr>
+                <tr>
+                    <td>Evento</td>
+                    <td>Event</td>
+                    <td>Um conjunto de resultados que queremos testar</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Obter um número par { 2, 4, 6}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Obter um número alto { 5, 6 }</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Obter um determinado número { 3 }</td>
+                </tr>
+            </tbody>            
+        </table>
+        <p><br/>
+            Agora, como programadores que somos vamos escrever um programa para simular um desafio.
+            <br /><br />
+            Primeiro algo bem simples. Vamos testar se o algoritmo de geração de números aleatórios desenvolvido pela
+            Microsoft produz um resultado uniforme. Queremos saber se ele se comporta de forma honesta.
+            <br /><br />
+            Para isto vamos simular o arremesso de um dado várias vezes. Se fizermos poucos ensaios o resultado obtido pode 
+            ser fruto apenas de uma coincidencia mas conforme o número de ensaios aumenta as coincidencias ficam cada vez 
+            mais raras. Sendo assim, imaginamos que o número de vezes que cada uma das faces vai aparecer deve ser muito 
+            proximos de #Ensaios / 6.
+
+            Vamos ver.
+        </p>            
     </div>
     <br />
 </div>
@@ -26,15 +251,18 @@
     .bdy {
         background: linear-gradient(to bottom, #6699cc, #99ccff);
     }
+
     .splash {
         //background: radial-gradient(circle, #6699cc, #66cccc, #99ccff);
         height: auto;
         width: auto;
         border-radius: 1%;
     }
+
     .h100 {
         height: 100%;
     }
+
     .flexColStart {
         display: flex;
         flex-direction: column;
@@ -42,6 +270,7 @@
         justify-content: center;
         color: black;
     }
+
     .flexColCenter {
         display: flex;
         flex-direction: column;
@@ -49,6 +278,7 @@
         justify-content: center;
         color: black;
     }
+
     .flexRowStart {
         display: flex;
         flex-direction: row;
@@ -56,6 +286,7 @@
         justify-content: left;
         color: black;
     }
+
     .flexRowEnd {
         display: flex;
         flex-direction: row;
@@ -63,11 +294,13 @@
         justify-content: right;
         color: black;
     }
+
     button {
         btn btn-labeled btn-primary btn-sm;
         margin-right: 3px;
         border: solid 1px red;
     }
+
     .htmlbtn {
         background-image: url(/icons/maintenance_32px.png);
         padding: 10px;
@@ -76,6 +309,7 @@
         background-size: 100% 100%;
         background-repeat: no-repeat;
     }
+
     .Img {
         border: none;
         padding: 10px;
@@ -85,15 +319,19 @@
         background-size: 100% 100%;
         background-repeat: no-repeat;
     }
+
     .Search {
         background-image: url(/icons/Search1.png);
     }
+
     .UpImage {
         background-image: url(/icons/UpArrow.png);
     }
+
     .DownImage {
         background-image: url(/icons/DownArrow.png);
     }
+
     .PageImage {
         background-image: url(/icons/Weather17.png);
         padding: 10px;
@@ -101,9 +339,25 @@
         background-size: 100% 100%;
         background-repeat: no-repeat;
     }
+
     label {
         font-size: 12px;
         color: red;
+    }
+
+    .pHigh {
+        font-weight: 900;
+        font-family: 'Mongolian Baiti';
+        font-size: 1.3rem;
+    }
+    .pIndent{
+        text-indent: 39px;
+    }
+    p {
+        font-weight: 400;
+        font-family: 'Tahoma';
+        font-size: 16px;
+        text-align: justify;
     }
 </style>
 <!-- C# code -->

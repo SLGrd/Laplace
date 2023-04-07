@@ -10,30 +10,97 @@
 <div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="flex-column">
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All" @onclick="() => ToggleMenu(ref P1Menu)">
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
+            @if (P1Menu)
+            {
+                <div class="container" style="margin-left: 20px;padding-right:10px;">
+                    <NavLink class="nav-link" href="IndexP2">
+                        <span class="" aria-hidden="true"></span> Overview
+                    </NavLink>
+                    <NavLink class="nav-link" href="ListGen">
+                        <span class="" aria-hidden="true"></span> List Lambda and Aggregates
+                    </NavLink>
+                </div>
+            }
         </div>
+
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="SampleSpace">
+            <NavLink class="nav-link" href="" @onclick="() => ToggleMenu(ref P2Menu)">
                 <span class="oi oi-plus" aria-hidden="true"></span> Polygon
             </NavLink>
+            @if (P2Menu)
+            {
+                <div class="container" style="margin-left: 20px;width:90%;padding-right:0px;">
+                    <NavLink class="nav-link" href="SampleSpace">
+                        <span class="" aria-hidden="true"></span> SVG Renderer
+                    </NavLink>
+                    <NavLink class="nav-link" href="SVGSandBox">
+                        <span class="" aria-hidden="true"></span> SVG Sand Box
+                    </NavLink>
+                </div>
+            }
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="RandomTest">
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Random Test
             </NavLink>
         </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="Casino">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Casino
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="GaussCurves">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Gauss Distribution
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="GaussDataGen">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Random Gaussian Data
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="GaussHistogram">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Histogram
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="CovarCorr">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Covariancia & Correlação
+            </NavLink>
+        </div>
     </nav>
-</div>
 
+    <div id="myicons_container">
+        <a href="https://icons8.com/" target="_blank">
+            <img src="Icons/icons8logo.png" width="30" height="30" />
+            <span style="color:gray"> Icons by Icons 8 </span>
+        </a>
+    </div>
+</div>
+<style>
+    #myicons_container {
+        position: fixed;
+        bottom: 0;
+        margin: 0 0 5px 5px;
+        color: antiquewhite;
+    }
+</style>
 @code {
     private bool collapseNavMenu = true;
+    private bool P1Menu = false;
+    private bool P2Menu = false;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
+    private void ToggleNavMenu() => collapseNavMenu = !collapseNavMenu;
+   
+    private void ToggleMenu(ref bool menuItm)
+    {        
+        bool saveMenuItm = menuItm;  
+        P1Menu = false; P2Menu = false; //  Collapse all sub menus
+        menuItm = !saveMenuItm;         //  Reset current sub menu
     }
 }

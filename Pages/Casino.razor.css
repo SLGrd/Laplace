@@ -1,0 +1,29 @@
+﻿#rectangle {
+    animation: moveRectangle 2s ease-in-out infinite;
+    animation-fill-mode:  both;
+}
+
+@keyframes moveRectangle {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(80px);
+    }
+}
+
+#cubo {
+    animation: moveCube 2s infinite;
+    animation-fill-mode: forwards;
+}
+@keyframes moveCube {
+    0% {
+        transform: translate(0, 0);
+          
+    }
+
+    100% {
+        transform: translate(80px, 30px);       
+    }
+}

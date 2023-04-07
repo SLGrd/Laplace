@@ -24,16 +24,28 @@
                     </select>
                 </div>              
             </div>
-            <div class="col-2 m-0 p-0">
+            <div class="col-1 m-0 p-0">
                 <div class="form-group m-0 padRight">
                     <label>Trials</label>
                     <input type="number" style="width:100%;height:30px;" @bind=maxTrials />
                 </div>
             </div>
-            <div class="col-2 m-0 p-0">
+            <div class="col-1 m-0 p-0">
                 <div class="form-group m-0 padRight">
                     <label>Rounds</label>
                     <input type="number" style="width:100%;height:30px;" @bind=maxRounds />
+                </div>
+            </div>
+            <div class="col-1 m-0 p-0">
+                <div class="form-group m-0 padRight">
+                    <label>Trials</label>
+                    <input type="number" style="width:100%;height:30px;" @bind=nArremessos />
+                </div>
+            </div>
+            <div class="col-1 m-0 p-0">
+                <div class="form-group m-0 padRight">
+                    <label>Rounds</label>
+                    <input type="text" style="width:100%;height:30px;" @bind=@avgScore />
                 </div>
             </div>
             <div class="col-2 m-0 p-0 ">
@@ -60,18 +72,18 @@
         </div>
 
         <div class="form-group m-0">
-            <label>Die Number #1</label>
+            <label>Trials counter</label>
             <input type="range" min="1" max="@maxTrials" step="1" style="width:100%" value="@nTrials" />
             <input type="number" min=1 max=6 step="1" style="background-color:azure;border:none" @bind-value=@nTrials />
         </div>
 
         <div class="form-group m-0">
-            <label>Die NUmber #2</label>
+            <label>Round counter</label>
             <input type="range" min="1" max="maxRounds" step="1" style="width:100%" value="@nRounds" />                   
             <input type="number" min=1 max=6 step="1" style="background-color:azure;border:none" @bind-value=@nRounds />
         </div>
     </div>
-    <div class="col-12 flexColCenter m-0 p-0 mb-3" style="height:85%;border:solid 1px red;border-color:cadetblue;">
+    <div class="col-12 flexColCenter m-0 p-0 mb-3" style="border:solid 3px red;">
         <SfChart Title="Die Randomness Tester" @ref="sfChart" >
             <ChartArea>
                 <ChartAreaBorder Width="4"></ChartAreaBorder>
@@ -89,7 +101,7 @@
             </ChartPrimaryYAxis>
 
             <ChartSeriesCollection >
-                <ChartSeries TooltipMappingName="MappingName" DataSource="@ChartPoints" XName="Country" YName="Face1" Name="Face1"
+                <ChartSeries TooltipMappingName="MappingName" DataSource="@ChartPoints" XName="Cubos" YName="Face1" Name="Face1"
                              ColumnSpacing="0.1" Type="ChartSeriesType.Column" Fill="red">
                     <ChartMarker>
                         <ChartDataLabel Visible="true" Position="LabelPosition.Top">
@@ -98,15 +110,15 @@
                     </ChartMarker>
                 </ChartSeries>
 
-                <ChartSeries TooltipMappingName="MappingName" DataSource="@ChartPoints" XName="Country" YName="Face2" Name="Face2"
-                             ColumnSpacing="0.1" Type="ChartSeriesType.Column" Fill="silver">
+                <ChartSeries TooltipMappingName="MappingName" DataSource="@ChartPoints" XName="Cubos" YName="Face2" Name="Face2"
+                             ColumnSpacing="0.1" Type="ChartSeriesType.Column" Fill="gray">
                     <ChartMarker>
                         <ChartDataLabel Visible="true" Position="LabelPosition.Top">
                             <ChartDataLabelFont FontWeight="600" Color="#ffffff"></ChartDataLabelFont>
                         </ChartDataLabel>
                     </ChartMarker>
                 </ChartSeries>
-                <ChartSeries TooltipMappingName="MappingName" DataSource="@ChartPoints" XName="Country" YName="Face3" Name="Face3"
+                <ChartSeries TooltipMappingName="MappingName" DataSource="@ChartPoints" XName="Cubos" YName="Face3" Name="Face3"
                              ColumnSpacing="0.1" Type="ChartSeriesType.Column" Fill="#cd7f32">
                     <ChartMarker>
                         <ChartDataLabel Visible="true" Position="LabelPosition.Top">
@@ -114,7 +126,7 @@
                         </ChartDataLabel>
                     </ChartMarker>
                 </ChartSeries>
-                <ChartSeries TooltipMappingName="MappingName" DataSource="@ChartPoints" XName="Country" YName="Face4" Name="Face4"
+                <ChartSeries TooltipMappingName="MappingName" DataSource="@ChartPoints" XName="Cubos" YName="Face4" Name="Face4"
                              ColumnSpacing="0.1" Type="ChartSeriesType.Column" Fill="black">
                     <ChartMarker>
                         <ChartDataLabel Visible="true" Position="LabelPosition.Top">
@@ -122,7 +134,7 @@
                         </ChartDataLabel>
                     </ChartMarker>
                 </ChartSeries>
-                <ChartSeries TooltipMappingName="MappingName" DataSource="@ChartPoints" XName="Country" YName="Face5" Name="Face5"
+                <ChartSeries TooltipMappingName="MappingName" DataSource="@ChartPoints" XName="Cubos" YName="Face5" Name="Face5"
                              ColumnSpacing="0.1" Type="ChartSeriesType.Column" Fill="blue">
                     <ChartMarker>
                         <ChartDataLabel Visible="true" Position="LabelPosition.Top">
@@ -131,7 +143,7 @@
                     </ChartMarker>
                 </ChartSeries>
 
-                <ChartSeries TooltipMappingName="MappingName" DataSource="@ChartPoints" XName="Country" YName="Face6" Name="Face6"
+                <ChartSeries TooltipMappingName="MappingName" DataSource="@ChartPoints" XName="Cubos" YName="Face6" Name="Face6"
                              ColumnSpacing="0.1" Type="ChartSeriesType.Column" Fill="green">
                     <ChartMarker>
                         <ChartDataLabel Visible="true" Position="LabelPosition.Top">
@@ -239,10 +251,12 @@
 
     private int nTrials = 0;
     private int nRounds = 0;
+    private int nArremessos = 0;
+    private string avgScore = "";
 
     public record ColumnChartData
     {
-        public string Country { get; set; }
+        public string Cubos { get; set; }
         public int Face1 { get; set; } = 0;
         public int Face2 { get; set; } = 0;
         public int Face3 { get; set; } = 0;
@@ -251,11 +265,10 @@
         public int Face6 { get; set; } = 0;
         public string MappingName { get; set; }
     }
-
     public List<ColumnChartData> ChartPoints { get; set; } = new List<ColumnChartData>
     {
-        new ColumnChartData { Country = "Cubo 1", Face1 = 0, Face2 = 0, Face3 = 0, Face4 = 0, Face5 = 0, Face6 = 0, MappingName = "C 1" },
-        new ColumnChartData { Country = "Total",  Face1 = 0, Face2 = 0, Face3 = 0, Face4 = 0, Face5 = 0, Face6 = 0, MappingName = "Total" },
+        new ColumnChartData { Cubos = "Cubo 1", Face1 = 0, Face2 = 0, Face3 = 0, Face4 = 0, Face5 = 0, Face6 = 0, MappingName = "C 1" },
+        new ColumnChartData { Cubos = "Total",  Face1 = 0, Face2 = 0, Face3 = 0, Face4 = 0, Face5 = 0, Face6 = 0, MappingName = "Total" },
     };
 
     protected override void OnInitialized()
@@ -284,18 +297,17 @@
         {
             TmrOnOff = "ON";
             t.Change( 1000, speed);
-            r.Change( 1000, speed);            //Timeout.Infinite, Timeout.Infinite
+            r.Change( 1000, speed);     //Timeout.Infinite, Timeout.Infinite
         } 
         else
             TimerOff();
     }
     private void ResetTimer()
     {
-        TimerOff();
-        nRounds = 0;
-        nTrials = 0;
+        TimerOff();        
         ClearChartPoints(0);
-        ClearChartPoints(1);     
+        ClearChartPoints(1);   
+        nRounds = 0; nTrials = 0; nArremessos = 0; avgScore = "";
     }
     private void UpdateData() 
     {
@@ -309,12 +321,12 @@
             ChartPoints[0].Face6
         };
         nTrials = frequencies.Max();
-
-        if ( nTrials >= maxTrials)
+      
+        if (frequencies.Max() >= maxTrials)
         {
             TimerOff();
             //  Moves result to total
-            var maxIndex = frequencies.IndexOf(nTrials);
+            var maxIndex = frequencies.IndexOf(frequencies.Max());
 
             ChartPoints[1].Face1 += ( maxIndex == 0 ? 1 : 0);
             ChartPoints[1].Face2 += ( maxIndex == 1 ? 1 : 0);
@@ -325,21 +337,22 @@
             nTrials = 0;
 
             if (nRounds < maxRounds -1 )
-            {
-                nRounds++; StartTimer();
-            }
+            { nRounds++; StartTimer();}     //  Inicia uma nova rodada
             else
-            {   nRounds = 0; TimerOff(); }
+            { nRounds = 0; TimerOff();}     //  Ebcerra o experimento
         }
         else
-        {   //  Simula um arremesso de um dado
+        {   
+            //  Simula um arremesso de um dado
             int m = rnd.Next(1, 7);
             ChartPoints[0].Face1 += ( m == 1 ? 1 : 0);
             ChartPoints[0].Face2 += ( m == 2 ? 1 : 0);
             ChartPoints[0].Face3 += ( m == 3 ? 1 : 0);
             ChartPoints[0].Face4 += ( m == 4 ? 1 : 0); 
             ChartPoints[0].Face5 += ( m == 5 ? 1 : 0);
-            ChartPoints[0].Face6 += ( m == 6 ? 1 : 0);
+            ChartPoints[0].Face6 += ( m == 6 ? 1 : 0);            
+            nArremessos++;
+            avgScore = (nArremessos / 6).ToString("N2");
         }
     }
     private void UpdateScreen() 

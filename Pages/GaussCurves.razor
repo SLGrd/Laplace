@@ -1,0 +1,124 @@
+﻿<!--@page "/GaussCurves"
+
+@using Syncfusion.Blazor
+@using Syncfusion.Blazor.Charts
+@using System.Diagnostics
+
+<PageTitle>Gaussian Curves</PageTitle>-->
+<!-- Greeting Message -->
+<!--@*<TopBanner BannerTxt="Testing Random Function">This model will be used in Probabilities videos</TopBanner>*@
+
+<div class="box">
+    <div class="row header">
+        <div class="col-12 flexColCenter">
+            <h2>Ploting Gaussian Curves</h2>
+        </div>
+    </div>
+    <div class="row content">        
+        <div class="col-12">      
+            
+            <SfChart Title="Olympic Medals">
+                <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"></ChartPrimaryXAxis>
+                <ChartSeriesCollection>
+                    <ChartSeries DataSource="@MedalDetails" XName="X" YName="Y" Type="ChartSeriesType.Line"></ChartSeries>
+                </ChartSeriesCollection>            
+            </SfChart>
+
+        </div>
+    </div>
+    <div class="row content">
+        <div class="col-12 flexColCenter">
+            <h2>Ploting Gaussian Curves 3</h2>
+        </div>
+    </div>
+    <div class="row footer">        
+        <div class="col-12 flexColCenter">
+            <h2><p>footer (fixed height)</p></h2>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        height: 100%;
+        margin: 0;
+    }
+    .box {
+        display: flex;
+        flex-flow: column;
+        height: 100%;
+        margin: 0;
+    }
+        .box .row {
+            border: 1px dotted #0313fc;
+            margin: 0;
+        }
+            .box .row.header {
+                flex: 0 1 40px;
+                border: solid 2px green;
+                margin: 0;               
+            }
+            .box .row.content {
+                flex: 1 1 auto;
+                border: solid 2px red;
+                margin: 0;
+            }
+            .box .row.footer {
+                flex: 0 1 40px;
+                border: solid 2px green;
+                margin: 0;
+            }
+    .flexColStart {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+        color: blue;
+    }
+    .flexColCenter {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: black;
+    }
+    .flexRowStart {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: left;
+        color: black;
+    }
+    .flexRowEnd {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: right;
+        color: black;
+    }
+</style>
+
+@code {
+
+    public class ChartData
+    {
+        public string X { get; set; }
+        public double Y { get; set; }
+    }
+
+    public List<ChartData> MedalDetails = new List<ChartData>
+    {
+        new ChartData { X= "South Korea", Y= 39.4 },
+        new ChartData { X= "India", Y= 61.3 },
+        new ChartData { X= "Pakistan", Y= 20.4 },
+        new ChartData { X= "Germany", Y= 65.1 },
+        new ChartData { X= "Australia", Y= 15.8 },
+        new ChartData { X= "Italy", Y= 29.2 },
+        new ChartData { X= "United Kingdom", Y= 44.6 },
+        new ChartData { X= "Saudi Arabia", Y= 9.7 },
+        new ChartData { X= "Russia", Y= 40.8 },
+        new ChartData { X= "Mexico", Y= 31 },
+        new ChartData { X= "Brazil", Y= 75.9 },
+        new ChartData { X= "China", Y= 51.4 }
+    };
+}-->

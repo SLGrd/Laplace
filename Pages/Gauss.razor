@@ -1,0 +1,390 @@
+﻿@page "/GaussCurves"
+@using Syncfusion.Blazor;
+@using Syncfusion.Blazor.Charts;
+@using MathNet.Numerics.Distributions;
+
+<!-- Greeting Message -->
+<PageTitle>Gaussian Curves</PageTitle>
+
+<!-- HTML -->
+<div class="box">
+    <div class="row header">
+        <div class="col-12 flexColCenter p-1" style="background-color: #001100;color:antiquewhite">
+            Ploting Gaussian Curves
+        </div>
+    </div>
+    <div class="row header mrgRow">
+        <div class="col-4 mrgCol ">
+            <div class="form-group mrgMidElement">
+                <label>Challenge</label>
+                <select class="" style="width:100%;height:30px;" @bind=PlotOption >
+                    <option value="-1">Choose challenge</option>
+                    <option value="1">Gaussian Prob Density</option>
+                    <option value="2">Gaussian Cumulative Prob</option>
+                    <option value="3">Both</option>
+                </select>                
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="mrgMidElement">
+                <label>Mean(‌&#956;)</label>
+                <input type="number" style="width:100%;height:30px;text-align:center" @bind=mean />
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="mrgMidElement">
+                <label>Std Dev( &#963; )</label>
+                <input type="number" style="width:100%;height:30px;text-align:center" @bind=stdDev />
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>From</label>
+                <input type="number" style="width:100%;height:30px;text-align:center" @bind=InitialValue />
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>To</label>
+                <input type="number" style="width:100%;height:30px;text-align:center" @bind=FinalValue />
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Plot</label>
+                <button class="btn button btn-outline-success flexColCenter" style="width:100%;height:30px;" @onclick="GetChallenge">
+                    <img src="Icons/plot.ico" width="28" height="20" />
+                </button>
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="mrgMidElement">
+                <label>Reset</label>
+                <button class="btn button btn-outline-info flexColCenter" style="width:100%;height:30px;" @onclick="Reset">
+                    <img src="Icons/reset.ico" width="20" height="20" />
+                </button>
+            </div>
+        </div>
+
+        <div class="row mrgRow m-0 p-0">
+            <div class="col-4 mrgCol">
+                <div class="mrgMidElement">                                     
+                    <textarea rows="2" cols="60" class="m-0 p-0" style="width:100%;height:54px;text-align:left;font-size:0.8rem">
+                        @questionP1@mean@questionP2@stdDev@questionP3@minHeight@questionP4@maxHeight@questionP5                        
+                    </textarea>                 
+                </div>
+            </div>
+            <div class="col-1 mrgCol">
+                <div class="mrgMidElement">
+                    <label>Min Height</label>
+                    <input type="number" style="width:100%;height:30px;text-align:center" @bind=minHeight @onclick="PlotMinHeight" />
+                </div>
+            </div>
+            <div class="col-1 mrgCol">
+                <div class="mrgMidElement">
+                    <label>Max Height</label>
+                    <input type="number" style="width:100%;height:30px;text-align:center" @bind=maxHeight @onclick="PlotMaxHeight" />
+                </div>
+            </div>
+            <div class="col-1 mrgCol">
+                <div class="mrgMidElement">
+                    <label>Min p-value</label>
+                    <input type="number" style="width:100%;height:30px;text-align:center" @bind=@minPercent />
+                </div>
+            </div>
+            <div class="col-1 mrgCol">
+                <div class="mrgMidElement">
+                    <label>Max p-value</label>
+                    <input type="number" style="width:100%;height:30px;text-align:center" @bind=@maxPercent />
+                </div>
+            </div>
+            <div class="col-1 mrgCol">
+                <div class="mrgMidElement">
+                    <label>Go</label>
+                    <button class="btn button btn-outline-success flexColCenter" style="width:100%;height:30px;" @onclick="CalcY">
+                        <img src="Icons/crayonDW.ico" width="20" height="20" />
+                    </button>
+                </div>
+            </div>
+            <div class="col-1 mrgCol">
+                <div class="form-group mrgMidElement">
+                    <label>p-value delta</label>
+                    <input type="number" style="width:100%;height:30px;text-align:center" @bind="X" />
+                </div>
+            </div>
+            <div class="col-1 mrgCol">
+                <div class="form-group mrgMidElement">
+                    <label>% between</label>
+                    <input type="number" style="width:100%;height:30px;text-align:center" @bind=Y />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row content">
+        <div class="col-12">
+            <SfChart Title="Gaussian Distribution" >
+                <ChartPrimaryXAxis Name="X" LabelFormat="n2" ValueType="Syncfusion.Blazor.Charts.ValueType.Double"></ChartPrimaryXAxis>
+                <ChartAxes>
+                    <ChartAxis OpposedPosition="true" Name="yAxis2" LabelFormat="n2"> </ChartAxis>
+                </ChartAxes>
+                <ChartAnnotations>
+                    <ChartAnnotation X="@fillShapeMid" Y="@fillShapeVer" CoordinateUnits="Units.Point">
+                        <ContentTemplate>
+                            <div style="color: firebrick; font-size: medium; font-style: italic">@Y.ToString("N2")</div>
+                        </ContentTemplate>
+                    </ChartAnnotation>
+                </ChartAnnotations>
+
+                <ChartLegendSettings Visible="true" Position="LegendPosition.Bottom" ><ChartLegendBorder Color="red" Width="1"/></ChartLegendSettings> 
+                <ChartTooltipSettings Enable="true" Header="Prob" Format="<b>${series.name} : ${point.y}</b>"></ChartTooltipSettings>
+
+                <ChartSeriesCollection>
+                @if (PlotOption == "1" || PlotOption == "3")
+                {                   
+                    <ChartSeries 
+                        Name ="PDF" DataSource="@gaussianValues" XName="X" YName="Y" Type="ChartSeriesType.Spline" Width="3" Opacity="0.6" Fill="#B78585" LegendShape="LegendShape.Circle">                             
+                    </ChartSeries>
+                    
+                    <ChartSeries 
+                        Name="P" DataSource="@fillArea" XName="X" Opacity="0.3" Fill="#f0d0c0" YName="Y" Type="ChartSeriesType.SplineArea" DashArray="0.5, 0.5">
+                    </ChartSeries>                                 
+                }
+                @if (PlotOption == "2" || PlotOption == "3")
+                {
+                    <ChartSeries 
+                        Name="CDF" DataSource="@gaussianValues" XName="X" YName="Z" YAxisName="yAxis2" Type="ChartSeriesType.Spline" Width="3" Opacity="0.6" Fill="#4C8EB9" LegendShape="LegendShape.Triangle">
+                    </ChartSeries>
+
+                    <ChartSeries 
+                        Name="MinH" DataSource="@XYminValues" XName="X" Width="1" Opacity="1" Fill="#101010" YName="Y" YAxisName="yAxis2" Type="ChartSeriesType.Line">
+                    </ChartSeries>
+
+                    <ChartSeries 
+                        Name="MaxH" DataSource="@XYmaxValues" XName="X" Width="1" Opacity="1" Fill="#101010" YName="Y" YAxisName="yAxis2" Type="ChartSeriesType.Line">
+                    </ChartSeries>
+                    
+                    <ChartSeries 
+                        Name="C" DataSource="@fillGaussian" XName="X" Opacity="0.3" Fill="#b0f0c0" YName="Z" YAxisName="yAxis2" Type="ChartSeriesType.SplineArea">                                                        
+                    </ChartSeries>
+                }                    
+                </ChartSeriesCollection>
+            </SfChart>
+        </div>
+    </div>
+    <div class="row footer">
+        <div class="col-12 flexColCenter" style="background-color: wheat">@Msg </div>
+    </div>
+</div>
+
+<!-- CSS -->
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        height: 100%;
+        margin: 0;
+    }
+    .box {
+        display: flex;
+        flex-flow: column;
+        height: 100%;
+        margin: 0;
+    }
+        .box .row {
+            border: 0px dotted #0313fc;
+            margin: 0;
+        }
+            .box .row.header {
+                flex: 0 1 40px;
+                border: solid 0px green;
+                margin: 0;
+            }
+            .box .row.parms {
+                flex: 0 1 80px;
+                border: solid 0px green;
+                margin: 0;
+            }
+            .box .row.content {
+                flex: 1 1 content;
+                border: solid 0px red;
+                margin: 0;
+            }
+            .box .row.footer {
+                flex: 0 1 15px;
+                border: solid 1px green;
+                margin: 0;
+                font-size: 11px;
+            }
+    .flexColStart {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+        color: blue;
+    }
+    .flexColCenter {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: black;
+    }
+    .flexRowStart {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: left;
+        color: black;
+    }
+    .flexRowEnd {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: right;
+        color: black;
+    }
+    .mrgRow {
+        margin-top: 0;
+        margin-right: 0px;
+        margin-bottom: 0px;
+        margin-left: 0px;
+        padding-left: 12px;
+        padding-right: 12px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+    .mrgCol {
+        margin-top: 0;
+        margin-right: 0px;
+        margin-bottom: 0px;
+        margin-left: 0px;
+        padding-left: 2px;
+        padding-right: 2px;
+        padding-top: 1px;
+        padding-bottom: 4px;
+    }
+    .mrgMidElement {
+        margin-top: 0;
+        margin-right: 0px;
+        margin-bottom: 0px;
+        margin-left: 0px;
+        padding-left: 1px;
+        padding-right: 1px;
+    }
+    label {
+        font-size: 12px;
+        color: red;
+    }
+</style>
+
+<!-- C# code -->
+@code {
+
+    #region Variables
+    private string Msg = "";
+    double mean = 180, stdDev = 7, X = 0, Y = 0;
+    private double InitialValue = 0, FinalValue = 0, stepValue = 0.01;
+    private string PlotOption = "-1";
+
+    double minHeight = 190, maxHeight = 195, minPercent = 0, maxPercent = 0, minFill = 160, maxFill = 176;
+    string questionP1 = "Given a gaussian distributed population whose height is ";
+    string questionP2 = "cm and its standard deviation is ";
+    string questionP3 = "cm, how much the population percentage between ";
+    string questionP4 = "cm and ";
+    string questionP5 = "cm is expected to be ?";
+
+    double fillShapeMid = 190;
+    string fillShapeVer = "0.03";
+    #endregion
+
+    private class Data
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Z { get; set; }
+    }
+    private List<Data> XYminValues = new List<Data>();
+    private List<Data> XYmaxValues = new List<Data>();
+    private List<Data> gaussianValues = new();
+    private List<Data> fillGaussian = new();
+    private List<Data> fillArea = new();
+
+    private double GaussianVal(double x, double mean, double stdDev)
+    {   //  Não esta sendo usada neste programa
+        //  => 1 /       ( σ * √(2π) )               *            e ^ (-(x - μ) ^ 2 / 2σ ^ 2)
+        return 1 / (stdDev * Math.Sqrt(2 * Math.PI)) * Math.Exp(-1 * Math.Pow((x - mean), 2.0) / (2 * stdDev * stdDev));
+    }
+    private void GetChallenge()
+    {
+        try
+        {
+            Msg = "";                                       //  Clear error message 
+            Normal normal = new Normal(mean, stdDev);       //  using MathNet.Numerics.Distributions;
+
+            gaussianValues = new List<Data>();
+
+            //  Calculao de primeiro valor do grafico
+            double Inicio = (InitialValue == 0 ? (mean - stdDev * 3) : InitialValue);
+            double Final = (FinalValue == 0 ? (mean + stdDev * 3) : FinalValue);
+
+            for (double i = Inicio; i <= Final; i += stepValue)            
+                switch (PlotOption)
+                {
+                    case "1":
+                        gaussianValues.Add(new Data { X = i, Y = normal.Density(i), Z = 0 }); break;
+                    case "2":
+                        gaussianValues.Add(new Data { X = i, Y = 0, Z = normal.CumulativeDistribution(i) }); break;
+                    case "3":
+                        gaussianValues.Add(new Data { X = i, Y = normal.Density(i), Z = normal.CumulativeDistribution(i) }); break;
+                }
+            PlotMinHeight();
+            PlotMaxHeight();   
+        }
+        catch (Exception ex) { Msg = ex.Message;  }
+    }
+    private void PlotMinHeight()
+    {
+        Normal normal = new Normal(mean, stdDev);
+        XYminValues.Clear();
+        XYminValues.Add( new Data { X = minHeight, Y = 0.0 });
+        XYminValues.Add( new Data { X = minHeight, Y = normal.CumulativeDistribution(minHeight) });
+        FillShape();
+    }
+    private void PlotMaxHeight()
+    {
+        Normal normal = new Normal(mean, stdDev);
+        XYmaxValues.Clear();
+        XYmaxValues.Add( new Data { X = maxHeight, Y = 0.0 });
+        XYmaxValues.Add( new Data { X = maxHeight, Y = normal.CumulativeDistribution(maxHeight) });
+        FillShape();
+    }
+    private void FillShape()
+    {
+        Normal normal = new Normal(mean, stdDev);
+        fillGaussian = gaussianValues.Where(x => (minHeight <= x.X) && (x.X <= maxHeight)).ToList();
+        fillShapeMid = (minHeight + maxHeight) * 0.5;
+        fillArea = gaussianValues.Where(x => (minFill <= x.X) && (x.X <= maxFill)).ToList();
+        double midPoint = normal.Density( mean);
+        fillShapeVer = (normal.CumulativeDistribution((minHeight + maxHeight) * 0.5) * midPoint).ToString("N4").Replace(",", ".");       
+        CalcY();
+    }
+    private void CalcY()
+    {
+        Normal normal = new Normal(mean, stdDev);
+        minPercent = Math.Round( normal.CumulativeDistribution(minHeight), 6);
+        maxPercent = Math.Round( normal.CumulativeDistribution(maxHeight), 6);
+        X = Math.Round(maxPercent - minPercent, 5);
+        Y = Math.Round(X * 100, 2);
+    }  
+    private void Reset()
+    {
+        mean         = 180;
+        stdDev       = 7;
+        InitialValue = 0;
+        FinalValue   = 0;
+        stepValue    = 0.01;
+        PlotOption   = "-1";
+    }
+}

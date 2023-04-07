@@ -1,0 +1,180 @@
+﻿@page "/IndexP2"
+
+<PageTitle>Index</PageTitle>
+
+<div class="container-fluid h100" style="background-color:lightgray;overflow-y:auto;">
+    <div class="container">
+            A q u i   v a i   o  e x e m p l o
+            Estou fazendo o programa ainda
+
+            Agora vamos de novo fazer um programa para simular o jogo a seguir,
+
+            a i n d a  e s t a m o s   p e n s a n d o
+
+            Vamos supor que vc é dono de um casino e como tal vc quer saber quais as chances o casino tem de sair vitorioso
+            num determinado jogo depois de milhares de apostas. Este será nosso desafio.
+
+            É isto que nós vamos fazer agora. Nós vamos inventar um jogo, fazer sua modelagem probilistica e usar o
+            computador par programar milhares de testes e analisar o resultado .
+
+            Durante o desenvolvimento do exemplo iremos identificar e discutir os postulados e axiomas das probilbidades.
+
+            Então vamos inventar um jogo simples. Vamos supor que vc vai jogar dois dados. Um após o outro. Se a soma dos
+            valores for maior que 10 ou menor que 4 vc ganha. Qquer outro resultado ganha o casino. O jogador tem 6 numeros que lhe dão vitoria ( 2, 3, 4, 10, 11, 12) e o casino apenas 5 ( 5, 6, 7, 8, 9 )
+
+            O modelo deste jogo nos diz que os resutlados possiveis são :
+
+            1 + 1 = 2
+            2 + 1 = 3
+            .....
+            6 + 1 = 7
+            1 + 6 = 7
+            ...
+            5 + 6 = 11
+            6 + 6 = 12
+
+            Ou seja, nnosso espaço amostral é  2, 3, 4,   5, 6, 7, 8, 9,   10, 11 e 12                      =>> Sample space.
+
+            O conjunto de todos os resultados possiveis recebe o nome de espaço amostral ou sample space.
+
+            Como nosso espaço amostral é finito e composto de 11 valores nós dizemos que é um espaço amostral discreto.
+            Se por outro o resultado for qualquer um dos infinitos pontos de um alvo o espaço amostral seria continuo, a área do alvo.
+            Cada resultado seria um dos infinitos pontos que o alvo contém atingido pelo dardo arremessado.
+
+            O conjunto de pontos que dá a vitoria ao jogador chamaremos de A e o conjunto de pontos do espaço amostral que
+            não pertence ao conjunto A receberá o nome de Ac ou complemento de A.
+
+            Cada experimento, no caso o lançamento dos dois dados, produzirá um resultado que chamaremos de evento. Como o
+            espaço amostral é o conjunto de todos os eventos possiveis dizemos que o evento é um sub conjunto do espaço amostral.
+
+            O evento composto de apenas um resultado é dito evento simples. O nosso evento, composto de mais de um resultado,
+            é chamado de evento composto
+
+            O evento deve ser definido com regras claras pq só duas coisas são possiveis, a saber , o evento ocorreu ou não
+            ocorreu. Cada evento deve ser obrigatoriamente expresso em valores do espaço amostral.
+
+            Mais algumas leis que veremos a seguir
+
+            2 The law of multiplication: If A and B are two independent events, the probability of both A and B happening is the product of their individual probabilities. P(A and B) = P(A) x P(B)
+
+            3  The complement rule: The probability of an event A not happening is given by P(not A) = 1 - P(A)
+
+            4  The conditional probability: Given an event B, the probability of an event A happening given that B has already happened is given by P(A|B) = P(A and B) / P(B)
+
+            5  Bayes' theorem: P(A|B) = P(B|A) * P(A) / P(B)
+
+            6  Total probability theorem: P(A) = P(A|B) * P(B) + P(A|not B) * P(not B)
+
+            These laws can be used to calculate the probability of complex events by breaking them down into simpler events, and they are based on the three axioms of probability that were discussed earlier.
+
+            x + x + x + 2x + 2x +2x = 1 =>   9x = 1 > x = 1/9
+    </div>
+</div>
+<!-- Style -->
+<style>
+    .bdy {
+        background: linear-gradient(to bottom, #6699cc, #99ccff);
+    }
+
+    .splash {
+        //background: radial-gradient(circle, #6699cc, #66cccc, #99ccff);
+        height: auto;
+        width: auto;
+        border-radius: 1%;
+    }
+
+    .h100 {
+        height: 100%;
+    }
+
+    .flexColStart {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+        color: black;
+    }
+
+    .flexColCenter {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: black;
+    }
+
+    .flexRowStart {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: left;
+        color: black;
+    }
+
+    .flexRowEnd {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: right;
+        color: black;
+    }
+
+    button {
+        btn btn-labeled btn-primary btn-sm;
+        margin-right: 3px;
+        border: solid 1px red;
+    }
+
+    .htmlbtn {
+        background-image: url(/icons/maintenance_32px.png);
+        padding: 10px;
+        margin-left: 4px;
+        /*margin-left: 40px;*/
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+    }
+
+    .Img {
+        border: none;
+        padding: 10px;
+        margin-left: 4px;
+        margin-right: 1px;
+        height: 20px;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+    }
+
+    .Search {
+        background-image: url(/icons/Search1.png);
+    }
+
+    .UpImage {
+        background-image: url(/icons/UpArrow.png);
+    }
+
+    .DownImage {
+        background-image: url(/icons/DownArrow.png);
+    }
+
+    .PageImage {
+        background-image: url(/icons/Weather17.png);
+        padding: 10px;
+        margin-left: 4px;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+    }
+
+    label {
+        font-size: 12px;
+        color: red;
+    }
+
+    .pHigh {
+        font-weight: 900;
+        font-family: 'Mongolian Baiti';
+        font-size: 1.3rem;
+    }
+</style>
+<!-- C# code -->
+@code {
+}

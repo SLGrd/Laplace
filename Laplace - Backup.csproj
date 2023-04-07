@@ -8,9 +8,12 @@
 
   <ItemGroup>
     <Content Remove="Pages\GaussCurves.razor" />
-    <Content Remove="Shared\Dice.razor" />
-    <Content Remove="Shared\_Imports.razor" />    
   </ItemGroup>
+
+
+    <ItemGroup>
+        <Compile Include="Shared/GlobalUsings.cs" />
+    </ItemGroup>
 
 
   <ItemGroup>
@@ -26,14 +29,11 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Pages\Casino.razor" />
-    <_ContentIncludedByDefault Remove="Pages\CovarCorr.razor" />
     <_ContentIncludedByDefault Remove="Pages\Gauss.razor" />
     <_ContentIncludedByDefault Remove="Pages\GaussCurves.razor" />
     <_ContentIncludedByDefault Remove="Pages\SvgSandBox.razor" />
     <_ContentIncludedByDefault Remove="Shared\Dice.razor" />
-    <_ContentIncludedByDefault Remove="Shared\QckGrdCovar.razor" />
     <_ContentIncludedByDefault Remove="Shared\TopBanner.razor" />
-    <_ContentIncludedByDefault Remove="Shared\_Imports.razor" />
   </ItemGroup>
 
   <ItemGroup>
@@ -58,27 +58,6 @@
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Pages\SvgSandBox.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Using Include="Microsoft.AspNetCore.Components.QuickGrid" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Shared\_Imports.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ApplicationDefinition Include="Shared\Dice.razor" />
-    <ApplicationDefinition Include="Shared\_Imports.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Pages\CovarCorr.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Shared\QckGrdCovar.razor" />
   </ItemGroup>
 
 

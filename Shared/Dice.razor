@@ -1,0 +1,52 @@
+﻿<g id="rectangl">
+    <rect id="10" x="@rectX" y="@rectY" width="80" height="80" rx="10" ry="10" fill="@FillColorDice" stroke="black" />
+    @if (Visible[0])
+    {
+        <circle cx="@(rectX + 40)" cy="@(rectY + 40)" r="5" fill="black" />
+    }
+    @if (Visible[1])
+    {
+        <circle cx="@(rectX + 20)" cy="@(rectY + 60)" r="5" fill="black" />
+        <circle cx="@(rectX + 60)" cy="@(rectY + 20)" r="5" fill="black" />
+    }
+    @if (Visible[2])
+    {
+        <circle cx="@(rectX + 40)" cy="@(rectY + 20)" r="5" fill="black" />
+        <circle cx="@(rectX + 40)" cy="@(rectY + 40)" r="5" fill="black" />
+        <circle cx="@(rectX + 40)" cy="@(rectY + 60)" r="5" fill="black" />
+    }
+    @if (Visible[3])
+    {
+        <circle cx="@(rectX + 20)" cy="@(rectY + 20)" r="5" fill="black" />
+        <circle cx="@(rectX + 20)" cy="@(rectY + 60)" r="5" fill="black" />
+        <circle cx="@(rectX + 60)" cy="@(rectY + 20)" r="5" fill="black" />
+        <circle cx="@(rectX + 60)" cy="@(rectY + 60)" r="5" fill="black" />
+    }
+    @if (Visible[4])
+    {
+        <circle cx="@(rectX + 20)" cy="@(rectY + 20)" r="5" fill="black" />
+        <circle cx="@(rectX + 20)" cy="@(rectY + 60)" r="5" fill="black" />
+        <circle cx="@(rectX + 40)" cy="@(rectY + 40)" r="5" fill="black" />
+        <circle cx="@(rectX + 60)" cy="@(rectY + 20)" r="5" fill="black" />
+        <circle cx="@(rectX + 60)" cy="@(rectY + 60)" r="5" fill="black" />
+    }
+    @if (Visible[5])
+    {
+        <circle cx="@(rectX + 20)" cy="@(rectY + 20)" r="5" fill="black" />
+        <circle cx="@(rectX + 20)" cy="@(rectY + 40)" r="5" fill="black" />
+        <circle cx="@(rectX + 20)" cy="@(rectY + 60)" r="5" fill="black" />
+        <circle cx="@(rectX + 60)" cy="@(rectY + 20)" r="5" fill="black" />
+        <circle cx="@(rectX + 60)" cy="@(rectY + 40)" r="5" fill="black" />
+        <circle cx="@(rectX + 60)" cy="@(rectY + 60)" r="5" fill="black" />
+    }
+</g>
+@code {
+    [Parameter]
+    public int? rectX { get; set; }
+    [Parameter]
+    public int? rectY { get; set; }
+    [Parameter]
+    public string? FillColorDice { get; set; }
+    [Parameter]
+    public bool[] Visible { get; set; }
+}

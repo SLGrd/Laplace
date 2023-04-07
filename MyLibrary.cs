@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿global using Microsoft.AspNetCore.Components.QuickGrid;
+using System.Drawing;
 
 namespace Laplace;
 public class MyLibrary

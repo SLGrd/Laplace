@@ -1,0 +1,459 @@
+﻿@page "/SvgSandBox"
+@inject IJSRuntime JSRuntime;
+
+<!-- Greeting Message -->
+<PageTitle>Gaussian Curves</PageTitle>
+<!-- HTML -->
+<div class="box">
+    <div class="row header">
+        <div class="col-12 flexColCenter p-1" style="background-color: #001100;color:antiquewhite">
+            Ploting Geometric Figures
+        </div>
+    </div>
+    <div class="row header mrgRow flexRowCenter mb-1" >
+        <div class="col-2 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Challenge</label>
+                <select class="" style="width:100%;height:30px;" @bind=PlotOption>
+                    <option value="-1">Choose challenge</option>
+                    <option value="1">Circle</option>
+                    <option value="2">Square</option>
+                    <option value="3">Triangle</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="mrgMidElement">
+                <label>Max X</label>
+                <input type="number" style="width:100%;height:30px;text-align:center" @bind=svgWidth />
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Max Y</label>
+                <input type="number" style="width:100%;height:30px;text-align:center" @bind=svgHeight />
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>X coordinate</label>
+                <input type="number" style="width:100%;height:30px;text-align:center" @bind=mouseX min="0" />
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Y coordinate</label>
+                <input type="number" style="width:100%;height:30px;text-align:center" @bind=mouseY min="0" />
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Radius</label>
+                <input type="number" style="width:100%;height:30px;text-align:center" min="0" />
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Number of Recs</label>
+                <input type="number" style="width:100%;height:30px;text-align:center" min="0" />
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Number of Recs</label>
+                <input type="number" style="width:100%;height:30px;text-align:center" @bind=nRecs />
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Build</label>
+                <button class="btn button btn-outline-success flexColCenter" style="width:100%;height:30px;" @onclick="DrawFigures">
+                    <img src="Icons/plot.ico" width="28" height="21" />
+                </button>
+            </div>
+        </div>
+        <div class="col-1 mrgCol">
+            <div class="form-group mrgMidElement">
+                <label>Reset</label>
+                <button class="btn button btn-outline-info flexColCenter" style="width:100%;height:30px;" @onclick="Reset">
+                    <img src="Icons/reset.ico" width="20" height="20" />
+                </button>
+            </div>
+        </div>
+    </div>
+
+    @if (PlotOption != "9")
+    {
+        <div class="row header mrgRow flexRowCenter mb-1" >
+            @if (PlotOption == "1")
+            {
+                <div class="col-9">
+                    <div class="row flexRowStart p-1" style="font-size:0.7rem">
+                        <div class="col-2 justify-content-center"> Coordinate X, Y and Radius</div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CxI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CxF" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CyI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CyF" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="RdI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="RdF" /> </div>
+                    </div>
+                    <div class="row flexRowStart p-1" style="font-size:0.7rem">
+                        <div class="col-2"> Fill Color</div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CfillRI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CfillRF" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CfillGI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CfillGF" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CfillBI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CfillBF" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CfillOI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CfillOF" /> </div>
+                    </div>
+                    <div class="row flexRowStart p-1" style="font-size:0.7rem">
+                        <div class="col-2"> Stroke Color</div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CstrkRI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CstrkRF" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CstrkGI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CstrkGF" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CstrkBI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CstrkBF" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CstrkOI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CstrkOF" /> </div>
+                    </div>
+                    <div class="row flexRowStart p-1" style="font-size:0.7rem">
+                        <div class="col-2"> Stroke Width</div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CstrwI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="CstrwF" /> </div>
+                        <div class="col-1">
+                            <button class="btn button btn-outline-info flexColCenter" style="width:100%;height:30px;" @onclick="DrawCircles">
+                                <img src="Icons/reset.ico" width="20" height="20" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3"></div>
+            }
+            @if (PlotOption == "2")
+            {
+                <div class="col-9">
+                    <div class="row flexRowStart p-1" style="font-size:0.7rem">
+                        <div class="col-2 justify-content-center"> Coordinate X, Y, Angle</div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QxI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QxF" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QyI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QyF" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QrI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QrF" /> </div>
+                    </div>
+                    <div class="row flexRowStart p-1" style="font-size:0.7rem">
+                        <div class="col-2"> Width and Height</div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QwI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QwF" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QhI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QhF" /> </div>
+                    </div>
+                    <div class="row flexRowStart p-1" style="font-size:0.7rem">
+                        <div class="col-2"> Fill Color</div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QfillRI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QfillRF" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QfillGI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QfillGF" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QfillBI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QfillBF" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QfillOI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QfillOF" /> </div>
+                    </div>
+                    <div class="row flexRowStart p-1" style="font-size:0.7rem">
+                        <div class="col-2"> Stroke Color</div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QstrkRI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QstrkRF" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QstrkGI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QstrkGF" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QstrkBI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QstrkBF" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QstrkOI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QstrkOF" /> </div>
+                    </div>
+                    <div class="row flexRowStart p-1" style="font-size:0.7rem">
+                        <div class="col-2"> Stroke Width</div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QstrwI" /> </div>
+                        <div class="col-1"> <input type="number" style="width:100%;height:20px;text-align:center" @bind-value="QstrwF" /> </div>
+                        <div class="col-1">
+                            <button class="btn button btn-outline-info flexColCenter" style="width:100%;height:30px;" @onclick="DrawSquares">
+                                <img src="Icons/reset.ico" width="20" height="20" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3" style="border-color:blue"></div>
+            }
+        </div>
+    }
+
+    <div class="row content">
+        <div class="col-12">
+            <!-- Set viewport and viewbox locations -->
+            <!-- Attention Bootstrap users: non percentual #width# values may mess up #Bootstrap# behavior -->
+            <svg x="0%" y="0%" width="100%" height="100%" @ref="SVGR" @onmousemove="HandleMouseMove" @onclick="HandleMouseClick" id="divSvg"
+                 style="border:solid 1px red;"
+                 preserveAspectRatio="@preservRatio" xmlns="https://www.w3.org/2000/svg">
+                <!-- 50 circles random colors, radius and locations-->
+                @foreach (Circle c in circles)
+                {
+                    <circle cx="@c.Cx" cy="@c.Cy" r="@c.Rd" fill="@c.Fill" stroke="@c.StrColor" stroke-width="@c.StrWidth" />
+                    //<polygon points="@arrTx1[i],@arrTy1[i] @arrTx2[i],@arrTy2[i] @arrTx3[i],@arrTy3[i]" style="fill:@arrCoT[i];stroke-width:1;stroke:black" />
+                    //<polygon points="@arrSx1[i],@arrSy1[i] @arrSx2[i],@arrSy2[i] @arrSx3[i],@arrSy3[i] @arrSx4[i],@arrSy4[i]" style="fill:@arrCoS[i];stroke-width:1;stroke:black" />
+                    //<rect x=@arrQx1[i] y=@arrQy1[i] width=@arrQx2[i] height=@arrQx2[i] style="fill:@arrQoS[i];stroke-width:1;stroke:black;transform: rotate( @(arrQoR[i])deg )" />*@
+                }
+                @foreach (Square s in squares)
+                {
+                    <rect x="@s.Qx" y="@s.Qy" width="@s.W" height="@s.H" transform="rotate(@s.Rt)" fill=@s.Fill stroke=@s.StrColor stroke-width=@s.StrWidth />
+                }
+            </svg>
+        </div>
+    </div>
+    <div class="row footer">
+        <div class="col-12 flexColCenter">@Msg </div>
+    </div>
+</div>
+<!-- CSS -->
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        height: 100%;
+        margin: 0;
+    }
+    .box {
+        display: flex;
+        flex-flow: column;
+        height: 100%;
+        margin: 0;
+    }
+        .box .row {
+            border: 0px dotted #0313fc;
+            margin: 0;
+        }
+            .box .row.header {
+                flex: 0 1 0px;
+                border: solid 0px green;
+                margin: 0;
+            }
+            .box .row.parms {
+                flex: 0 1 0px;
+                border: solid 0px green;
+                margin: 0;
+            }
+            .box .row.content {
+                flex: 1 1 content;
+                border: solid 0px red;
+                margin: 0;
+            }
+            .box .row.footer {
+                flex: 0 1 15px;
+                border: solid 1px green;
+                margin: 0;
+                font-size: 11px;
+            }
+    .flexColStart {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+        color: blue;
+    }
+    .flexColCenter {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: black;
+    }
+    .flexRowStart {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: left;
+        color: black;
+    }
+    .flexRowCenter {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: center;
+        color: black;
+    }
+    .flexRowEnd {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: right;
+        color: black;
+    }
+    .mrgRow {
+        margin-top: 0;
+        margin-right: 0px;
+        margin-bottom: 0px;
+        margin-left: 0px;
+        padding-left: 12px;
+        padding-right: 12px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+    .mrgCol {
+        margin: 0;
+        padding-left: 2px;
+        padding-right: 2px;
+        padding-top: 1px;
+        padding-bottom: 4px;
+    }
+    .mrgMidElement {
+        margin: 0;
+        padding-left: 1px;
+        padding-right: 1px;
+    }
+    label {
+        font-size: 11px;
+        color: red;
+    }
+    .titleFont {
+        color: darkolivegreen;
+        font-family: 'Montserrat';
+        font-size: 1.1em;
+    }
+</style>
+<!-- C# Code -->
+@code {
+    private class Circle
+    {
+        public int Cx { get; set; }
+        public int Cy { get; set; }
+        public int Rd { get; set; }
+
+        public string Fill { get; set; } = "#0";
+        public string StrColor { get; set; } = "#0";
+        public string StrWidth { get; set; } = "#0";
+
+        public Circle()
+        {
+            Cx = 0; Cy = 0; Rd = 0; Fill = ""; StrColor = ""; StrWidth = "";
+        }
+    }
+    //  Circle coordinates
+    int CxI, CxF, CyI, CyF;                         //  Center coordinates
+    int RdI = 30, RdF = 120;                        //  Radius value
+                                                    //  Collors and border width
+    int CfillRI = 0, CfillGI = 0, CfillBI = 0, CfillOI = 0;
+    int CfillRF = 255, CfillGF = 255, CfillBF = 255, CfillOF = 255;
+    int CstrkRI = 0, CstrkGI = 0, CstrkBI = 0, CstrkOI = 0;
+    int CstrkRF = 255, CstrkGF = 255, CstrkBF = 255, CstrkOF = 255;
+    int CstrwI = 0, CstrwF = 5;
+
+    private class Square
+    {
+        public int Qx { get; set; }
+        public int Qy { get; set; }
+        public int W { get; set; }
+        public int H { get; set; }
+        public string Rt { get; set; }          //  Rotation and pin point
+        public string Fill { get; set; } = "#0";
+        public string StrColor { get; set; } = "#0";
+        public string StrWidth { get; set; } = "#0";
+
+        public Square()
+        {
+            Qx = 0; Qy = 0; W = 0; H = 0; Rt = "0";
+            Fill = ""; StrColor = ""; StrWidth = "";
+        }
+    }
+    //  Square coordinates
+    int QxI, QxF, QyI, QyF;                         //  Top, left position
+    int QwI = 30, QwF = 120, QhI = 32, QhF = 32;    //  Width and Height
+    int QrI = 0, QrF = 0;                           //  Rotation
+                                                    //  Colors and border width
+    int QfillRI = 0, QfillGI = 0, QfillBI = 0, QfillOI = 0;
+    int QfillRF = 255, QfillGF = 255, QfillBF = 255, QfillOF = 255;
+    int QstrkRI = 0, QstrkGI = 0, QstrkBI = 0, QstrkOI = 0;
+    int QstrkRF = 255, QstrkGF = 255, QstrkBF = 255, QstrkOF = 255;
+    int QstrwI = 0, QstrwF = 5;
+
+    // Mouse hovering position
+    int mouseX, mouseY;
+    //  General random
+    Random rnd = new Random();
+    int nRecs = 12;
+    string Fill = "", Stroke = "", Strw = "";
+    string PlotOption = "-1", Msg = "";
+
+    private ElementReference SVGR;
+    private string preservRatio = "none";
+    double svgWidth = 0, svgHeight = 0;
+
+    List<Circle> circles = new();
+    List<Square> squares = new();
+    private void DrawFigures()
+    {
+        for (int i = 0; i < nRecs; i++)
+        {            
+            circles.Add( DrawCircle());            
+            squares.Add( DrawSquare());
+        }
+    }
+    private void DrawCircles()
+    {
+        for (int i = 0; i < nRecs; i++)
+            circles.Add(DrawCircle());        
+    }
+    private void DrawSquares()
+    {
+        for (int i = 0; i < nRecs; i++)
+            squares.Add(DrawSquare());
+    }
+    private Circle DrawCircle()
+    {
+        Circle c = new();
+        //  Draw Circle();
+        c.Cx = rnd.Next(CxI, CxF);
+        c.Cy = rnd.Next(CyI, CyF);
+        c.Rd = rnd.Next(RdI, RdF);
+        c.Fill = $"#{rnd.Next(CfillRI, CfillRF):x2}{rnd.Next(CfillGI, CfillGF):x2}{rnd.Next(CfillBI, CfillBF):x2}{rnd.Next(CfillOI, CfillOF):x2}";
+        c.StrColor = $"#{rnd.Next(CstrkRI, CstrkRI):x2}{rnd.Next(CstrkGI, CstrkGF):x2}{rnd.Next(CstrkBI, CstrkBF):x2}{rnd.Next(CstrkOI, CstrkOF):x2}";
+        c.StrWidth = $"{rnd.Next(CstrwI, CstrwF):N0}";
+        return c;
+    }
+    private Square DrawSquare()
+    {
+        Square s = new();
+        s.Qx = rnd.Next(QxI, QxF);
+        s.Qy = rnd.Next(QyI, QyF);
+        s.W  = rnd.Next(QwI, QwF);
+        s.H  = rnd.Next(QhI, QhF);
+        s.Rt = $"{rnd.Next(QrI, QrF):N0} {s.Qx:N0} {s.Qy:N0}"; // Rotation angle and pin point coordinates
+        s.Fill = $"#{rnd.Next(QfillRI, QfillRF):x2}{rnd.Next(QfillGI, QfillGF):x2}{rnd.Next(QfillBI, QfillBF):x2}{rnd.Next(QfillOI, QfillOF):x2}";
+        s.StrColor = $"#{rnd.Next(QstrkRI, QstrkRI):x2}{rnd.Next(QstrkGI, QstrkGF):x2}{rnd.Next(QstrkBI, QstrkBF):x2}{rnd.Next(QstrkOI, QstrkOF):x2}";
+        s.StrWidth = $"{rnd.Next(QstrwI, QstrwF):N0}";
+        return s;
+    }
+    private void HandleMouseMove(MouseEventArgs e)  { mouseX = (int)e.OffsetX; mouseY = (int)e.OffsetY; }
+    private void HandleMouseClick(MouseEventArgs e) { CxI = (int)e.OffsetX; CyI = (int)e.OffsetY; }
+    private async void Reset()
+    {
+        circles.Clear();
+        squares.Clear();
+        var dm = await GetElementPositionAndDimensions("divSvg");
+        svgWidth = dm.width; CxF = (int)dm.width; QxF = CxF;
+        svgHeight = dm.height; CyF = (int)dm.height; QyF = CyF;
+        this.StateHasChanged();
+    }
+    private async Task<(double x, double y, double width, double height)> GetElementPositionAndDimensions(string id)
+    {
+        var result = await JSRuntime.InvokeAsync<string>("getElementPositionAndDimensions", id);
+        string[] parts = result.Split(',');
+        for (int i = 0; i < 4; i++)
+        {
+            parts[i] = parts[i].Substring(0, parts[i].IndexOf("."));
+        }
+        return (double.Parse(parts[0]), double.Parse(parts[1]), double.Parse(parts[2]), double.Parse(parts[3]));
+    }
+}
