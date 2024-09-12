@@ -16,7 +16,8 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
 }
-Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("OTY1MzI2QDMyMzAyZTM0MmUzMGRuSXdDVE55OXN3WCsyRTlxTW0zaGNEMGtjbFFFbW1qSkFBMTRPTkNueTQ9");
+// Precisa pegar uma chave para Blazor no site da Syncfusion para os graficos
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("OTY1MzI2QDMyMzAyZTM0MmUzMGRuSXdDVE55OXN3WCsyRTlxTW0zaGNEMG????????????????????");
 
 app.UseStaticFiles();
 
